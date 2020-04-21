@@ -1,25 +1,25 @@
 {
-  "updateTime": "2020-03-09T20:18:03.054595Z",
   "sources": [
     {
       "git": {
         "name": ".",
-        "remote": "sso://devrel/cloud/libraries/python/python-recommendations-ai"
+        "remote": "https://github.com/googleapis/python-recommendations-ai.git",
+        "sha": "b1295f377c9353b635c0a397a3924b928db40db3"
       }
     },
     {
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "8f631c4c70a60a9c7da3749511ee4ad432b62898",
-        "internalRef": "299885195"
+        "sha": "42ee97c1b93a0e3759bbba3013da309f670a90ab",
+        "internalRef": "307114445"
       }
     },
     {
-      "template": {
-        "name": "python_library",
-        "origin": "synthtool.gcp",
-        "version": "2020.2.4"
+      "git": {
+        "name": "synthtool",
+        "remote": "https://github.com/googleapis/synthtool.git",
+        "sha": "f5e4c17dc78a966dbf29961dd01f9bbd63e20a04"
       }
     }
   ],
