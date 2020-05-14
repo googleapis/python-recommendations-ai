@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 
-from .client import UserEventServiceClient
 
-__all__ = ("UserEventServiceClient",)
+__protobuf__ = proto.module(
+    package="google.cloud.recommendationengine.v1beta1", manifest={}
+)
+
+
+__all__ = tuple(sorted(__protobuf__.manifest))

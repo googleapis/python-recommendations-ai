@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ from google.auth import credentials  # type: ignore
 
 from google.api import httpbody_pb2 as httpbody  # type: ignore
 from google.cloud.recommendationengine_v1beta1.types import import_
-from google.cloud.recommendationengine_v1beta1.types import user_event
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event_service
 from google.longrunning import operations_pb2 as operations  # type: ignore
 
@@ -72,7 +72,7 @@ class UserEventServiceTransport(metaclass=abc.ABCMeta):
     def write_user_event(
         self
     ) -> typing.Callable[
-        [user_event_service.WriteUserEventRequest], user_event.UserEvent
+        [user_event_service.WriteUserEventRequest], gcr_user_event.UserEvent
     ]:
         raise NotImplementedError
 

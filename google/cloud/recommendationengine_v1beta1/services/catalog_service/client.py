@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 #
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Tuple, Type, Union
+import re
+from typing import Callable, Dict, Sequence, Tuple, Type, Union
 import pkg_resources
 
 import google.api_core.client_options as ClientOptions  # type: ignore
@@ -75,8 +76,38 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
     website.
     """
 
-    DEFAULT_OPTIONS = ClientOptions.ClientOptions(
-        api_endpoint="recommendationengine.googleapis.com"
+    @staticmethod
+    def _get_default_mtls_endpoint(api_endpoint):
+        """Convert api endpoint to mTLS endpoint.
+        Convert "*.sandbox.googleapis.com" and "*.googleapis.com" to
+        "*.mtls.sandbox.googleapis.com" and "*.mtls.googleapis.com" respectively.
+        Args:
+            api_endpoint (Optional[str]): the api endpoint to convert.
+        Returns:
+            str: converted mTLS api endpoint.
+        """
+        if not api_endpoint:
+            return api_endpoint
+
+        mtls_endpoint_re = re.compile(
+            r"(?P<name>[^.]+)(?P<mtls>\.mtls)?(?P<sandbox>\.sandbox)?(?P<googledomain>\.googleapis\.com)?"
+        )
+
+        m = mtls_endpoint_re.match(api_endpoint)
+        name, mtls, sandbox, googledomain = m.groups()
+        if mtls or not googledomain:
+            return api_endpoint
+
+        if sandbox:
+            return api_endpoint.replace(
+                "sandbox.googleapis.com", "mtls.sandbox.googleapis.com"
+            )
+
+        return api_endpoint.replace(".googleapis.com", ".mtls.googleapis.com")
+
+    DEFAULT_ENDPOINT = "recommendationengine.googleapis.com"
+    DEFAULT_MTLS_ENDPOINT = _get_default_mtls_endpoint.__func__(  # type: ignore
+        DEFAULT_ENDPOINT
     )
 
     @classmethod
@@ -104,7 +135,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         *,
         credentials: credentials.Credentials = None,
         transport: Union[str, CatalogServiceTransport] = None,
-        client_options: ClientOptions = DEFAULT_OPTIONS,
+        client_options: ClientOptions = None,
     ) -> None:
         """Instantiate the catalog service client.
 
@@ -118,6 +149,17 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
                 transport to use. If set to None, a transport is chosen
                 automatically.
             client_options (ClientOptions): Custom options for the client.
+                (1) The ``api_endpoint`` property can be used to override the
+                default endpoint provided by the client.
+                (2) If ``transport`` argument is None, ``client_options`` can be
+                used to create a mutual TLS transport. If ``client_cert_source``
+                is provided, mutual TLS transport will be created with the given
+                ``api_endpoint`` or the default mTLS endpoint, and the client
+                SSL credentials obtained from ``client_cert_source``.
+
+        Raises:
+            google.auth.exceptions.MutualTlsChannelError: If mutual TLS transport
+                creation failed for any reason.
         """
         if isinstance(client_options, dict):
             client_options = ClientOptions.from_dict(client_options)
@@ -126,24 +168,54 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         # Ordinarily, we provide the transport, but allowing a custom transport
         # instance provides an extensibility point for unusual situations.
         if isinstance(transport, CatalogServiceTransport):
+            # transport is a CatalogServiceTransport instance.
             if credentials:
                 raise ValueError(
                     "When providing a transport instance, "
                     "provide its credentials directly."
                 )
             self._transport = transport
-        else:
+        elif client_options is None or (
+            client_options.api_endpoint is None
+            and client_options.client_cert_source is None
+        ):
+            # Don't trigger mTLS if we get an empty ClientOptions.
             Transport = type(self).get_transport_class(transport)
             self._transport = Transport(
+                credentials=credentials, host=self.DEFAULT_ENDPOINT
+            )
+        else:
+            # We have a non-empty ClientOptions. If client_cert_source is
+            # provided, trigger mTLS with user provided endpoint or the default
+            # mTLS endpoint.
+            if client_options.client_cert_source:
+                api_mtls_endpoint = (
+                    client_options.api_endpoint
+                    if client_options.api_endpoint
+                    else self.DEFAULT_MTLS_ENDPOINT
+                )
+            else:
+                api_mtls_endpoint = None
+
+            api_endpoint = (
+                client_options.api_endpoint
+                if client_options.api_endpoint
+                else self.DEFAULT_ENDPOINT
+            )
+
+            self._transport = CatalogServiceGrpcTransport(
                 credentials=credentials,
-                host=client_options.api_endpoint
-                or "recommendationengine.googleapis.com",
+                host=api_endpoint,
+                api_mtls_endpoint=api_mtls_endpoint,
+                client_cert_source=client_options.client_cert_source,
             )
 
     def create_catalog_item(
         self,
         request: catalog_service.CreateCatalogItemRequest = None,
         *,
+        parent: str = None,
+        catalog_item: catalog.CatalogItem = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -154,6 +226,17 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
             request (:class:`~.catalog_service.CreateCatalogItemRequest`):
                 The request object. Request message for
                 CreateCatalogItem method.
+            parent (:class:`str`):
+                Required. The parent catalog resource name, such as
+                ``projects/*/locations/global/catalogs/default_catalog``
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            catalog_item (:class:`~.catalog.CatalogItem`):
+                Required. The catalog item to create.
+                This corresponds to the ``catalog_item`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -168,8 +251,23 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any([parent, catalog_item]):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = catalog_service.CreateCatalogItemRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if catalog_item is not None:
+            request.catalog_item = catalog_item
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -232,6 +330,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
+
         if name is not None:
             request.name = name
 
@@ -259,6 +358,8 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         self,
         request: catalog_service.ListCatalogItemsRequest = None,
         *,
+        parent: str = None,
+        filter: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -269,6 +370,18 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
             request (:class:`~.catalog_service.ListCatalogItemsRequest`):
                 The request object. Request message for ListCatalogItems
                 method.
+            parent (:class:`str`):
+                Required. The parent catalog resource name, such as
+                ``projects/*/locations/global/catalogs/default_catalog``
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            filter (:class:`str`):
+                Optional. A filter to apply on the
+                list results.
+                This corresponds to the ``filter`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -286,8 +399,23 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any([parent, filter]):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = catalog_service.ListCatalogItemsRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if filter is not None:
+            request.filter = filter
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -319,6 +447,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         self,
         request: catalog_service.UpdateCatalogItemRequest = None,
         *,
+        name: str = None,
         catalog_item: catalog.CatalogItem = None,
         update_mask: field_mask.FieldMask = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
@@ -332,6 +461,12 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
             request (:class:`~.catalog_service.UpdateCatalogItemRequest`):
                 The request object. Request message for
                 UpdateCatalogItem method.
+            name (:class:`str`):
+                Required. Full resource name of catalog item, such as
+                ``projects/*/locations/global/catalogs/default_catalog/catalogItems/some_catalog_item_id``
+                This corresponds to the ``name`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
             catalog_item (:class:`~.catalog.CatalogItem`):
                 Required. The catalog item to update/create. The
                 'catalog_item_id' field has to match that in the 'name'.
@@ -361,7 +496,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         # Create or coerce a protobuf request object.
         # Sanity check: If we got a request object, we should *not* have
         # gotten any keyword arguments that map to the request.
-        if request is not None and any([catalog_item, update_mask]):
+        if request is not None and any([name, catalog_item, update_mask]):
             raise ValueError(
                 "If the `request` argument is set, then none of "
                 "the individual field arguments should be set."
@@ -371,10 +506,11 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
+
+        if name is not None:
+            request.name = name
         if catalog_item is not None:
             request.catalog_item = catalog_item
-        # If we have keyword arguments corresponding to fields on the
-        # request, apply these.
         if update_mask is not None:
             request.update_mask = update_mask
 
@@ -433,6 +569,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
+
         if name is not None:
             request.name = name
 
@@ -451,6 +588,10 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         self,
         request: import_.ImportCatalogItemsRequest = None,
         *,
+        parent: str = None,
+        request_id: str = None,
+        input_config: import_.InputConfig = None,
+        errors_config: import_.ImportErrorsConfig = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -466,6 +607,36 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         Args:
             request (:class:`~.import_.ImportCatalogItemsRequest`):
                 The request object. Request message for Import methods.
+            parent (:class:`str`):
+                Required.
+                "projects/1234/locations/global/catalogs/default_catalog".
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            request_id (:class:`str`):
+                Optional. Unique identifier provided
+                by client, within the ancestor dataset
+                scope. Ensures idempotency and used for
+                request deduplication. Server-generated
+                if unspecified. Up to 128 characters
+                long. This is returned as
+                google.longrunning.Operation.name in the
+                response.
+                This corresponds to the ``request_id`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            input_config (:class:`~.import_.InputConfig`):
+                Required. The desired input location
+                of the data.
+                This corresponds to the ``input_config`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            errors_config (:class:`~.import_.ImportErrorsConfig`):
+                Optional. The desired location of
+                errors incurred during the Import.
+                This corresponds to the ``errors_config`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -486,8 +657,29 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any(
+            [parent, request_id, input_config, errors_config]
+        ):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = import_.ImportCatalogItemsRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if request_id is not None:
+            request.request_id = request_id
+        if input_config is not None:
+            request.input_config = input_config
+        if errors_config is not None:
+            request.errors_config = errors_config
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.

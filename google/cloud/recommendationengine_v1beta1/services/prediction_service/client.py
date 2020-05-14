@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 #
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Tuple, Type, Union
+import re
+from typing import Callable, Dict, Sequence, Tuple, Type, Union
 import pkg_resources
 
 import google.api_core.client_options as ClientOptions  # type: ignore
@@ -28,6 +29,7 @@ from google.oauth2 import service_account  # type: ignore
 
 from google.cloud.recommendationengine_v1beta1.services.prediction_service import pagers
 from google.cloud.recommendationengine_v1beta1.types import prediction_service
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 
 from .transports.base import PredictionServiceTransport
 from .transports.grpc import PredictionServiceGrpcTransport
@@ -68,8 +70,38 @@ class PredictionServiceClientMeta(type):
 class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
     """Service for making recommendation prediction."""
 
-    DEFAULT_OPTIONS = ClientOptions.ClientOptions(
-        api_endpoint="recommendationengine.googleapis.com"
+    @staticmethod
+    def _get_default_mtls_endpoint(api_endpoint):
+        """Convert api endpoint to mTLS endpoint.
+        Convert "*.sandbox.googleapis.com" and "*.googleapis.com" to
+        "*.mtls.sandbox.googleapis.com" and "*.mtls.googleapis.com" respectively.
+        Args:
+            api_endpoint (Optional[str]): the api endpoint to convert.
+        Returns:
+            str: converted mTLS api endpoint.
+        """
+        if not api_endpoint:
+            return api_endpoint
+
+        mtls_endpoint_re = re.compile(
+            r"(?P<name>[^.]+)(?P<mtls>\.mtls)?(?P<sandbox>\.sandbox)?(?P<googledomain>\.googleapis\.com)?"
+        )
+
+        m = mtls_endpoint_re.match(api_endpoint)
+        name, mtls, sandbox, googledomain = m.groups()
+        if mtls or not googledomain:
+            return api_endpoint
+
+        if sandbox:
+            return api_endpoint.replace(
+                "sandbox.googleapis.com", "mtls.sandbox.googleapis.com"
+            )
+
+        return api_endpoint.replace(".googleapis.com", ".mtls.googleapis.com")
+
+    DEFAULT_ENDPOINT = "recommendationengine.googleapis.com"
+    DEFAULT_MTLS_ENDPOINT = _get_default_mtls_endpoint.__func__(  # type: ignore
+        DEFAULT_ENDPOINT
     )
 
     @classmethod
@@ -97,7 +129,7 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
         *,
         credentials: credentials.Credentials = None,
         transport: Union[str, PredictionServiceTransport] = None,
-        client_options: ClientOptions = DEFAULT_OPTIONS,
+        client_options: ClientOptions = None,
     ) -> None:
         """Instantiate the prediction service client.
 
@@ -111,6 +143,17 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
                 transport to use. If set to None, a transport is chosen
                 automatically.
             client_options (ClientOptions): Custom options for the client.
+                (1) The ``api_endpoint`` property can be used to override the
+                default endpoint provided by the client.
+                (2) If ``transport`` argument is None, ``client_options`` can be
+                used to create a mutual TLS transport. If ``client_cert_source``
+                is provided, mutual TLS transport will be created with the given
+                ``api_endpoint`` or the default mTLS endpoint, and the client
+                SSL credentials obtained from ``client_cert_source``.
+
+        Raises:
+            google.auth.exceptions.MutualTlsChannelError: If mutual TLS transport
+                creation failed for any reason.
         """
         if isinstance(client_options, dict):
             client_options = ClientOptions.from_dict(client_options)
@@ -119,24 +162,54 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
         # Ordinarily, we provide the transport, but allowing a custom transport
         # instance provides an extensibility point for unusual situations.
         if isinstance(transport, PredictionServiceTransport):
+            # transport is a PredictionServiceTransport instance.
             if credentials:
                 raise ValueError(
                     "When providing a transport instance, "
                     "provide its credentials directly."
                 )
             self._transport = transport
-        else:
+        elif client_options is None or (
+            client_options.api_endpoint is None
+            and client_options.client_cert_source is None
+        ):
+            # Don't trigger mTLS if we get an empty ClientOptions.
             Transport = type(self).get_transport_class(transport)
             self._transport = Transport(
+                credentials=credentials, host=self.DEFAULT_ENDPOINT
+            )
+        else:
+            # We have a non-empty ClientOptions. If client_cert_source is
+            # provided, trigger mTLS with user provided endpoint or the default
+            # mTLS endpoint.
+            if client_options.client_cert_source:
+                api_mtls_endpoint = (
+                    client_options.api_endpoint
+                    if client_options.api_endpoint
+                    else self.DEFAULT_MTLS_ENDPOINT
+                )
+            else:
+                api_mtls_endpoint = None
+
+            api_endpoint = (
+                client_options.api_endpoint
+                if client_options.api_endpoint
+                else self.DEFAULT_ENDPOINT
+            )
+
+            self._transport = PredictionServiceGrpcTransport(
                 credentials=credentials,
-                host=client_options.api_endpoint
-                or "recommendationengine.googleapis.com",
+                host=api_endpoint,
+                api_mtls_endpoint=api_mtls_endpoint,
+                client_cert_source=client_options.client_cert_source,
             )
 
     def predict(
         self,
         request: prediction_service.PredictRequest = None,
         *,
+        name: str = None,
+        user_event: gcr_user_event.UserEvent = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -150,6 +223,58 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
         Args:
             request (:class:`~.prediction_service.PredictRequest`):
                 The request object. Request message for Predict method.
+            name (:class:`str`):
+                Required. Full resource name of the format:
+                {name=projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/placements/*}
+                The id of the recommendation engine placement. This id
+                is used to identify the set of models that will be used
+                to make the prediction.
+
+                We currently support three placements with the following
+                IDs by default:
+
+                -  ``shopping_cart``: Predicts items frequently bought
+                   together with one or more catalog items in the same
+                   shopping session. Commonly displayed after
+                   ``add-to-cart`` events, on product detail pages, or
+                   on the shopping cart page.
+
+                -  ``home_page``: Predicts the next product that a user
+                   will most likely engage with or purchase based on the
+                   shopping or viewing history of the specified
+                   ``userId`` or ``visitorId``. For example -
+                   Recommendations for you.
+
+                -  ``product_detail``: Predicts the next product that a
+                   user will most likely engage with or purchase. The
+                   prediction is based on the shopping or viewing
+                   history of the specified ``userId`` or ``visitorId``
+                   and its relevance to a specified ``CatalogItem``.
+                   Typically used on product detail pages. For example -
+                   More items like this.
+
+                -  ``recently_viewed_default``: Returns up to 75 items
+                   recently viewed by the specified ``userId`` or
+                   ``visitorId``, most recent ones first. Returns
+                   nothing if neither of them has viewed any items yet.
+                   For example - Recently viewed.
+
+                The full list of available placements can be seen at
+                https://console.cloud.google.com/recommendation/datafeeds/default_catalog/dashboard
+                This corresponds to the ``name`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            user_event (:class:`~.gcr_user_event.UserEvent`):
+                Required. Context about the user,
+                what they are looking at and what action
+                they took to trigger the predict
+                request. Note that this user event
+                detail won't be ingested to userEvent
+                logs. Thus, a separate userEvent write
+                request is required for event logging.
+                This corresponds to the ``user_event`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -166,8 +291,23 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any([name, user_event]):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = prediction_service.PredictRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if name is not None:
+            request.name = name
+        if user_event is not None:
+            request.user_event = user_event
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
