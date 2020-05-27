@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 #
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Tuple, Type, Union
+import re
+from typing import Callable, Dict, Sequence, Tuple, Type, Union
 import pkg_resources
 
 import google.api_core.client_options as ClientOptions  # type: ignore
@@ -80,8 +81,38 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
     20 API keys per project.
     """
 
-    DEFAULT_OPTIONS = ClientOptions.ClientOptions(
-        api_endpoint="recommendationengine.googleapis.com"
+    @staticmethod
+    def _get_default_mtls_endpoint(api_endpoint):
+        """Convert api endpoint to mTLS endpoint.
+        Convert "*.sandbox.googleapis.com" and "*.googleapis.com" to
+        "*.mtls.sandbox.googleapis.com" and "*.mtls.googleapis.com" respectively.
+        Args:
+            api_endpoint (Optional[str]): the api endpoint to convert.
+        Returns:
+            str: converted mTLS api endpoint.
+        """
+        if not api_endpoint:
+            return api_endpoint
+
+        mtls_endpoint_re = re.compile(
+            r"(?P<name>[^.]+)(?P<mtls>\.mtls)?(?P<sandbox>\.sandbox)?(?P<googledomain>\.googleapis\.com)?"
+        )
+
+        m = mtls_endpoint_re.match(api_endpoint)
+        name, mtls, sandbox, googledomain = m.groups()
+        if mtls or not googledomain:
+            return api_endpoint
+
+        if sandbox:
+            return api_endpoint.replace(
+                "sandbox.googleapis.com", "mtls.sandbox.googleapis.com"
+            )
+
+        return api_endpoint.replace(".googleapis.com", ".mtls.googleapis.com")
+
+    DEFAULT_ENDPOINT = "recommendationengine.googleapis.com"
+    DEFAULT_MTLS_ENDPOINT = _get_default_mtls_endpoint.__func__(  # type: ignore
+        DEFAULT_ENDPOINT
     )
 
     @classmethod
@@ -109,7 +140,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         *,
         credentials: credentials.Credentials = None,
         transport: Union[str, PredictionApiKeyRegistryTransport] = None,
-        client_options: ClientOptions = DEFAULT_OPTIONS,
+        client_options: ClientOptions = None,
     ) -> None:
         """Instantiate the prediction api key registry client.
 
@@ -123,6 +154,17 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
                 transport to use. If set to None, a transport is chosen
                 automatically.
             client_options (ClientOptions): Custom options for the client.
+                (1) The ``api_endpoint`` property can be used to override the
+                default endpoint provided by the client.
+                (2) If ``transport`` argument is None, ``client_options`` can be
+                used to create a mutual TLS transport. If ``client_cert_source``
+                is provided, mutual TLS transport will be created with the given
+                ``api_endpoint`` or the default mTLS endpoint, and the client
+                SSL credentials obtained from ``client_cert_source``.
+
+        Raises:
+            google.auth.exceptions.MutualTlsChannelError: If mutual TLS transport
+                creation failed for any reason.
         """
         if isinstance(client_options, dict):
             client_options = ClientOptions.from_dict(client_options)
@@ -131,18 +173,46 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         # Ordinarily, we provide the transport, but allowing a custom transport
         # instance provides an extensibility point for unusual situations.
         if isinstance(transport, PredictionApiKeyRegistryTransport):
+            # transport is a PredictionApiKeyRegistryTransport instance.
             if credentials:
                 raise ValueError(
                     "When providing a transport instance, "
                     "provide its credentials directly."
                 )
             self._transport = transport
-        else:
+        elif client_options is None or (
+            client_options.api_endpoint is None
+            and client_options.client_cert_source is None
+        ):
+            # Don't trigger mTLS if we get an empty ClientOptions.
             Transport = type(self).get_transport_class(transport)
             self._transport = Transport(
+                credentials=credentials, host=self.DEFAULT_ENDPOINT
+            )
+        else:
+            # We have a non-empty ClientOptions. If client_cert_source is
+            # provided, trigger mTLS with user provided endpoint or the default
+            # mTLS endpoint.
+            if client_options.client_cert_source:
+                api_mtls_endpoint = (
+                    client_options.api_endpoint
+                    if client_options.api_endpoint
+                    else self.DEFAULT_MTLS_ENDPOINT
+                )
+            else:
+                api_mtls_endpoint = None
+
+            api_endpoint = (
+                client_options.api_endpoint
+                if client_options.api_endpoint
+                else self.DEFAULT_ENDPOINT
+            )
+
+            self._transport = PredictionApiKeyRegistryGrpcTransport(
                 credentials=credentials,
-                host=client_options.api_endpoint
-                or "recommendationengine.googleapis.com",
+                host=api_endpoint,
+                api_mtls_endpoint=api_mtls_endpoint,
+                client_cert_source=client_options.client_cert_source,
             )
 
     def create_prediction_api_key_registration(
