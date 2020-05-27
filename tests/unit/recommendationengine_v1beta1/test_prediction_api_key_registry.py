@@ -214,6 +214,58 @@ def test_create_prediction_api_key_registration(transport: str = "grpc"):
     assert response.api_key == "api_key_value"
 
 
+def test_create_prediction_api_key_registration_flattened():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials()
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.create_prediction_api_key_registration), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = (
+            prediction_apikey_registry_service.PredictionApiKeyRegistration()
+        )
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = client.create_prediction_api_key_registration(
+            parent="parent_value",
+            prediction_api_key_registration=prediction_apikey_registry_service.PredictionApiKeyRegistration(
+                api_key="api_key_value"
+            ),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[
+            0
+        ].prediction_api_key_registration == prediction_apikey_registry_service.PredictionApiKeyRegistration(
+            api_key="api_key_value"
+        )
+
+
+def test_create_prediction_api_key_registration_flattened_error():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials()
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.create_prediction_api_key_registration(
+            prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(),
+            parent="parent_value",
+            prediction_api_key_registration=prediction_apikey_registry_service.PredictionApiKeyRegistration(
+                api_key="api_key_value"
+            ),
+        )
+
+
 def test_list_prediction_api_key_registrations(transport: str = "grpc"):
     client = PredictionApiKeyRegistryClient(
         credentials=credentials.AnonymousCredentials(), transport=transport
@@ -275,6 +327,45 @@ def test_list_prediction_api_key_registrations_field_headers():
     # Establish that the field header was sent.
     _, _, kw = call.mock_calls[0]
     assert ("x-goog-request-params", "parent=parent/value") in kw["metadata"]
+
+
+def test_list_prediction_api_key_registrations_flattened():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials()
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.list_prediction_api_key_registrations), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = (
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsResponse()
+        )
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = client.list_prediction_api_key_registrations(parent="parent_value")
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+
+
+def test_list_prediction_api_key_registrations_flattened_error():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials()
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.list_prediction_api_key_registrations(
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(),
+            parent="parent_value",
+        )
 
 
 def test_list_prediction_api_key_registrations_pager():
@@ -392,6 +483,43 @@ def test_delete_prediction_api_key_registration(transport: str = "grpc"):
 
     # Establish that the response is the type that we expect.
     assert response is None
+
+
+def test_delete_prediction_api_key_registration_flattened():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials()
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.delete_prediction_api_key_registration), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = None
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = client.delete_prediction_api_key_registration(name="name_value")
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].name == "name_value"
+
+
+def test_delete_prediction_api_key_registration_flattened_error():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials()
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.delete_prediction_api_key_registration(
+            prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(),
+            name="name_value",
+        )
 
 
 def test_credentials_transport_error():

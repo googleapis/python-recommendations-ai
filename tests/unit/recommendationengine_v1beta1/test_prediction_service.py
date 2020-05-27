@@ -36,6 +36,7 @@ from google.cloud.recommendationengine_v1beta1.types import catalog
 from google.cloud.recommendationengine_v1beta1.types import common
 from google.cloud.recommendationengine_v1beta1.types import prediction_service
 from google.cloud.recommendationengine_v1beta1.types import user_event
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.oauth2 import service_account
 from google.protobuf import struct_pb2 as struct  # type: ignore
 from google.protobuf import timestamp_pb2 as timestamp  # type: ignore
@@ -214,6 +215,44 @@ def test_predict(transport: str = "grpc"):
 
     assert response.dry_run is True
     assert response.next_page_token == "next_page_token_value"
+
+
+def test_predict_flattened():
+    client = PredictionServiceClient(credentials=credentials.AnonymousCredentials())
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(type(client._transport.predict), "__call__") as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = prediction_service.PredictResponse()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = client.predict(
+            name="name_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].name == "name_value"
+        assert args[0].user_event == gcr_user_event.UserEvent(
+            event_type="event_type_value"
+        )
+
+
+def test_predict_flattened_error():
+    client = PredictionServiceClient(credentials=credentials.AnonymousCredentials())
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.predict(
+            prediction_service.PredictRequest(),
+            name="name_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
 
 
 def test_predict_pager():
