@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ class CatalogInlineSource(proto.Message):
     """
 
     catalog_items = proto.RepeatedField(
-        proto.MESSAGE, number=1, message=catalog.CatalogItem
+        proto.MESSAGE, number=1, message=catalog.CatalogItem,
     )
 
 
@@ -88,7 +88,7 @@ class UserEventInlineSource(proto.Message):
     """
 
     user_events = proto.RepeatedField(
-        proto.MESSAGE, number=1, message=user_event.UserEvent
+        proto.MESSAGE, number=1, message=user_event.UserEvent,
     )
 
 
@@ -131,8 +131,8 @@ class ImportCatalogItemsRequest(proto.Message):
 
     parent = proto.Field(proto.STRING, number=1)
     request_id = proto.Field(proto.STRING, number=2)
-    input_config = proto.Field(proto.MESSAGE, number=3, message="InputConfig")
-    errors_config = proto.Field(proto.MESSAGE, number=4, message=ImportErrorsConfig)
+    input_config = proto.Field(proto.MESSAGE, number=3, message="InputConfig",)
+    errors_config = proto.Field(proto.MESSAGE, number=4, message=ImportErrorsConfig,)
 
 
 class ImportUserEventsRequest(proto.Message):
@@ -160,8 +160,8 @@ class ImportUserEventsRequest(proto.Message):
 
     parent = proto.Field(proto.STRING, number=1)
     request_id = proto.Field(proto.STRING, number=2)
-    input_config = proto.Field(proto.MESSAGE, number=3, message="InputConfig")
-    errors_config = proto.Field(proto.MESSAGE, number=4, message=ImportErrorsConfig)
+    input_config = proto.Field(proto.MESSAGE, number=3, message="InputConfig",)
+    errors_config = proto.Field(proto.MESSAGE, number=4, message=ImportErrorsConfig,)
 
 
 class InputConfig(proto.Message):
@@ -180,11 +180,11 @@ class InputConfig(proto.Message):
     """
 
     catalog_inline_source = proto.Field(
-        proto.MESSAGE, number=1, message=CatalogInlineSource
+        proto.MESSAGE, number=1, message=CatalogInlineSource,
     )
-    gcs_source = proto.Field(proto.MESSAGE, number=2, message=GcsSource)
+    gcs_source = proto.Field(proto.MESSAGE, number=2, message=GcsSource,)
     user_event_inline_source = proto.Field(
-        proto.MESSAGE, number=3, message=UserEventInlineSource
+        proto.MESSAGE, number=3, message=UserEventInlineSource,
     )
 
 
@@ -215,10 +215,10 @@ class ImportMetadata(proto.Message):
 
     operation_name = proto.Field(proto.STRING, number=5)
     request_id = proto.Field(proto.STRING, number=3)
-    create_time = proto.Field(proto.MESSAGE, number=4, message=timestamp.Timestamp)
+    create_time = proto.Field(proto.MESSAGE, number=4, message=timestamp.Timestamp,)
     success_count = proto.Field(proto.INT64, number=1)
     failure_count = proto.Field(proto.INT64, number=2)
-    update_time = proto.Field(proto.MESSAGE, number=6, message=timestamp.Timestamp)
+    update_time = proto.Field(proto.MESSAGE, number=6, message=timestamp.Timestamp,)
 
 
 class ImportCatalogItemsResponse(proto.Message):
@@ -236,8 +236,8 @@ class ImportCatalogItemsResponse(proto.Message):
             errors in the request if set.
     """
 
-    error_samples = proto.RepeatedField(proto.MESSAGE, number=1, message=status.Status)
-    errors_config = proto.Field(proto.MESSAGE, number=2, message=ImportErrorsConfig)
+    error_samples = proto.RepeatedField(proto.MESSAGE, number=1, message=status.Status,)
+    errors_config = proto.Field(proto.MESSAGE, number=2, message=ImportErrorsConfig,)
 
 
 class ImportUserEventsResponse(proto.Message):
@@ -258,10 +258,10 @@ class ImportUserEventsResponse(proto.Message):
             status.
     """
 
-    error_samples = proto.RepeatedField(proto.MESSAGE, number=1, message=status.Status)
-    errors_config = proto.Field(proto.MESSAGE, number=2, message=ImportErrorsConfig)
+    error_samples = proto.RepeatedField(proto.MESSAGE, number=1, message=status.Status,)
+    errors_config = proto.Field(proto.MESSAGE, number=2, message=ImportErrorsConfig,)
     import_summary = proto.Field(
-        proto.MESSAGE, number=3, message="UserEventImportSummary"
+        proto.MESSAGE, number=3, message="UserEventImportSummary",
     )
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 #
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Tuple, Type, Union
+import os
+import re
+from typing import Callable, Dict, Sequence, Tuple, Type, Union
 import pkg_resources
 
 import google.api_core.client_options as ClientOptions  # type: ignore
@@ -24,6 +26,8 @@ from google.api_core import exceptions  # type: ignore
 from google.api_core import gapic_v1  # type: ignore
 from google.api_core import retry as retries  # type: ignore
 from google.auth import credentials  # type: ignore
+from google.auth.transport import mtls  # type: ignore
+from google.auth.exceptions import MutualTLSChannelError  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
 from google.cloud.recommendationengine_v1beta1.services.prediction_service import pagers
@@ -31,6 +35,7 @@ from google.cloud.recommendationengine_v1beta1.types import prediction_service
 
 from .transports.base import PredictionServiceTransport
 from .transports.grpc import PredictionServiceGrpcTransport
+from .transports.grpc_asyncio import PredictionServiceGrpcAsyncIOTransport
 
 
 class PredictionServiceClientMeta(type):
@@ -45,8 +50,11 @@ class PredictionServiceClientMeta(type):
         OrderedDict()
     )  # type: Dict[str, Type[PredictionServiceTransport]]
     _transport_registry["grpc"] = PredictionServiceGrpcTransport
+    _transport_registry["grpc_asyncio"] = PredictionServiceGrpcAsyncIOTransport
 
-    def get_transport_class(cls, label: str = None) -> Type[PredictionServiceTransport]:
+    def get_transport_class(
+        cls, label: str = None,
+    ) -> Type[PredictionServiceTransport]:
         """Return an appropriate transport class.
 
         Args:
@@ -68,8 +76,38 @@ class PredictionServiceClientMeta(type):
 class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
     """Service for making recommendation prediction."""
 
-    DEFAULT_OPTIONS = ClientOptions.ClientOptions(
-        api_endpoint="recommendationengine.googleapis.com"
+    @staticmethod
+    def _get_default_mtls_endpoint(api_endpoint):
+        """Convert api endpoint to mTLS endpoint.
+        Convert "*.sandbox.googleapis.com" and "*.googleapis.com" to
+        "*.mtls.sandbox.googleapis.com" and "*.mtls.googleapis.com" respectively.
+        Args:
+            api_endpoint (Optional[str]): the api endpoint to convert.
+        Returns:
+            str: converted mTLS api endpoint.
+        """
+        if not api_endpoint:
+            return api_endpoint
+
+        mtls_endpoint_re = re.compile(
+            r"(?P<name>[^.]+)(?P<mtls>\.mtls)?(?P<sandbox>\.sandbox)?(?P<googledomain>\.googleapis\.com)?"
+        )
+
+        m = mtls_endpoint_re.match(api_endpoint)
+        name, mtls, sandbox, googledomain = m.groups()
+        if mtls or not googledomain:
+            return api_endpoint
+
+        if sandbox:
+            return api_endpoint.replace(
+                "sandbox.googleapis.com", "mtls.sandbox.googleapis.com"
+            )
+
+        return api_endpoint.replace(".googleapis.com", ".mtls.googleapis.com")
+
+    DEFAULT_ENDPOINT = "recommendationengine.googleapis.com"
+    DEFAULT_MTLS_ENDPOINT = _get_default_mtls_endpoint.__func__(  # type: ignore
+        DEFAULT_ENDPOINT
     )
 
     @classmethod
@@ -97,7 +135,7 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
         *,
         credentials: credentials.Credentials = None,
         transport: Union[str, PredictionServiceTransport] = None,
-        client_options: ClientOptions = DEFAULT_OPTIONS,
+        client_options: ClientOptions = None,
     ) -> None:
         """Instantiate the prediction service client.
 
@@ -110,27 +148,75 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
             transport (Union[str, ~.PredictionServiceTransport]): The
                 transport to use. If set to None, a transport is chosen
                 automatically.
-            client_options (ClientOptions): Custom options for the client.
+            client_options (ClientOptions): Custom options for the client. It
+                won't take effect if a ``transport`` instance is provided.
+                (1) The ``api_endpoint`` property can be used to override the
+                default endpoint provided by the client. GOOGLE_API_USE_MTLS
+                environment variable can also be used to override the endpoint:
+                "always" (always use the default mTLS endpoint), "never" (always
+                use the default regular endpoint, this is the default value for
+                the environment variable) and "auto" (auto switch to the default
+                mTLS endpoint if client SSL credentials is present). However,
+                the ``api_endpoint`` property takes precedence if provided.
+                (2) The ``client_cert_source`` property is used to provide client
+                SSL credentials for mutual TLS transport. If not provided, the
+                default SSL credentials will be used if present.
+
+        Raises:
+            google.auth.exceptions.MutualTLSChannelError: If mutual TLS transport
+                creation failed for any reason.
         """
         if isinstance(client_options, dict):
             client_options = ClientOptions.from_dict(client_options)
+        if client_options is None:
+            client_options = ClientOptions.ClientOptions()
+
+        if client_options.api_endpoint is None:
+            use_mtls_env = os.getenv("GOOGLE_API_USE_MTLS", "never")
+            if use_mtls_env == "never":
+                client_options.api_endpoint = self.DEFAULT_ENDPOINT
+            elif use_mtls_env == "always":
+                client_options.api_endpoint = self.DEFAULT_MTLS_ENDPOINT
+            elif use_mtls_env == "auto":
+                has_client_cert_source = (
+                    client_options.client_cert_source is not None
+                    or mtls.has_default_client_cert_source()
+                )
+                client_options.api_endpoint = (
+                    self.DEFAULT_MTLS_ENDPOINT
+                    if has_client_cert_source
+                    else self.DEFAULT_ENDPOINT
+                )
+            else:
+                raise MutualTLSChannelError(
+                    "Unsupported GOOGLE_API_USE_MTLS value. Accepted values: never, auto, always"
+                )
 
         # Save or instantiate the transport.
         # Ordinarily, we provide the transport, but allowing a custom transport
         # instance provides an extensibility point for unusual situations.
         if isinstance(transport, PredictionServiceTransport):
-            if credentials:
+            # transport is a PredictionServiceTransport instance.
+            if credentials or client_options.credentials_file:
                 raise ValueError(
                     "When providing a transport instance, "
                     "provide its credentials directly."
+                )
+            if client_options.scopes:
+                raise ValueError(
+                    "When providing a transport instance, "
+                    "provide its scopes directly."
                 )
             self._transport = transport
         else:
             Transport = type(self).get_transport_class(transport)
             self._transport = Transport(
                 credentials=credentials,
-                host=client_options.api_endpoint
-                or "recommendationengine.googleapis.com",
+                credentials_file=client_options.credentials_file,
+                host=client_options.api_endpoint,
+                scopes=client_options.scopes,
+                api_mtls_endpoint=client_options.api_endpoint,
+                client_cert_source=client_options.client_cert_source,
             )
 
     def predict(
@@ -172,15 +258,21 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
         rpc = gapic_v1.method.wrap_method(
-            self._transport.predict, default_timeout=None, client_info=_client_info
+            self._transport.predict, default_timeout=None, client_info=_client_info,
+        )
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("name", request.name),)),
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # This method is paged; wrap the response in a pager, which provides
         # an `__iter__` convenience method.
-        response = pagers.PredictPager(method=rpc, request=request, response=response)
+        response = pagers.PredictPager(method=rpc, request=request, response=response,)
 
         # Done; return the response.
         return response
@@ -189,8 +281,8 @@ class PredictionServiceClient(metaclass=PredictionServiceClientMeta):
 try:
     _client_info = gapic_v1.client_info.ClientInfo(
         gapic_version=pkg_resources.get_distribution(
-            "google-cloud-recommendations-ai"
-        ).version
+            "google-cloud-recommendations-ai",
+        ).version,
     )
 except pkg_resources.DistributionNotFound:
     _client_info = gapic_v1.client_info.ClientInfo()
