@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import abc
 import typing
 
 from google import auth
+from google.api_core import exceptions  # type: ignore
 from google.api_core import operations_v1  # type: ignore
 from google.auth import credentials  # type: ignore
 
@@ -29,7 +30,7 @@ from google.longrunning import operations_pb2 as operations  # type: ignore
 from google.protobuf import empty_pb2 as empty  # type: ignore
 
 
-class CatalogServiceTransport(metaclass=abc.ABCMeta):
+class CatalogServiceTransport(abc.ABC):
     """Abstract transport class for CatalogService."""
 
     AUTH_SCOPES = ("https://www.googleapis.com/auth/cloud-platform",)
@@ -39,6 +40,9 @@ class CatalogServiceTransport(metaclass=abc.ABCMeta):
         *,
         host: str = "recommendationengine.googleapis.com",
         credentials: credentials.Credentials = None,
+        credentials_file: typing.Optional[str] = None,
+        scopes: typing.Optional[typing.Sequence[str]] = AUTH_SCOPES,
+        **kwargs,
     ) -> None:
         """Instantiate the transport.
 
@@ -49,6 +53,10 @@ class CatalogServiceTransport(metaclass=abc.ABCMeta):
                 credentials identify the application to the service; if none
                 are specified, the client will attempt to ascertain the
                 credentials from the environment.
+            credentials_file (Optional[str]): A file with credentials that can
+                be loaded with :func:`google.auth.load_credentials_from_file`.
+                This argument is mutually exclusive with credentials.
+            scope (Optional[Sequence[str]]): A list of scopes.
         """
         # Save the hostname. Default to port 443 (HTTPS) if none is specified.
         if ":" not in host:
@@ -57,8 +65,17 @@ class CatalogServiceTransport(metaclass=abc.ABCMeta):
 
         # If no credentials are provided, then determine the appropriate
         # defaults.
-        if credentials is None:
-            credentials, _ = auth.default(scopes=self.AUTH_SCOPES)
+        if credentials and credentials_file:
+            raise exceptions.DuplicateCredentialArgs(
+                "'credentials_file' and 'credentials' are mutually exclusive"
+            )
+
+        if credentials_file is not None:
+            credentials, _ = auth.load_credentials_from_file(
+                credentials_file, scopes=scopes
+            )
+        elif credentials is None:
+            credentials, _ = auth.default(scopes=scopes)
 
         # Save the credentials.
         self._credentials = credentials
@@ -66,50 +83,64 @@ class CatalogServiceTransport(metaclass=abc.ABCMeta):
     @property
     def operations_client(self) -> operations_v1.OperationsClient:
         """Return the client designed to process long-running operations."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def create_catalog_item(
-        self
+        self,
     ) -> typing.Callable[
-        [catalog_service.CreateCatalogItemRequest], catalog.CatalogItem
+        [catalog_service.CreateCatalogItemRequest],
+        typing.Union[catalog.CatalogItem, typing.Awaitable[catalog.CatalogItem]],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def get_catalog_item(
-        self
-    ) -> typing.Callable[[catalog_service.GetCatalogItemRequest], catalog.CatalogItem]:
-        raise NotImplementedError
+        self,
+    ) -> typing.Callable[
+        [catalog_service.GetCatalogItemRequest],
+        typing.Union[catalog.CatalogItem, typing.Awaitable[catalog.CatalogItem]],
+    ]:
+        raise NotImplementedError()
 
     @property
     def list_catalog_items(
-        self
+        self,
     ) -> typing.Callable[
         [catalog_service.ListCatalogItemsRequest],
-        catalog_service.ListCatalogItemsResponse,
+        typing.Union[
+            catalog_service.ListCatalogItemsResponse,
+            typing.Awaitable[catalog_service.ListCatalogItemsResponse],
+        ],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def update_catalog_item(
-        self
+        self,
     ) -> typing.Callable[
-        [catalog_service.UpdateCatalogItemRequest], catalog.CatalogItem
+        [catalog_service.UpdateCatalogItemRequest],
+        typing.Union[catalog.CatalogItem, typing.Awaitable[catalog.CatalogItem]],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def delete_catalog_item(
-        self
-    ) -> typing.Callable[[catalog_service.DeleteCatalogItemRequest], empty.Empty]:
-        raise NotImplementedError
+        self,
+    ) -> typing.Callable[
+        [catalog_service.DeleteCatalogItemRequest],
+        typing.Union[empty.Empty, typing.Awaitable[empty.Empty]],
+    ]:
+        raise NotImplementedError()
 
     @property
     def import_catalog_items(
-        self
-    ) -> typing.Callable[[import_.ImportCatalogItemsRequest], operations.Operation]:
-        raise NotImplementedError
+        self,
+    ) -> typing.Callable[
+        [import_.ImportCatalogItemsRequest],
+        typing.Union[operations.Operation, typing.Awaitable[operations.Operation]],
+    ]:
+        raise NotImplementedError()
 
 
 __all__ = ("CatalogServiceTransport",)

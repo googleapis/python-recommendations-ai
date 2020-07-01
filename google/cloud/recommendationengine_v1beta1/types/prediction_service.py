@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ from google.protobuf import struct_pb2 as struct  # type: ignore
 
 __protobuf__ = proto.module(
     package="google.cloud.recommendationengine.v1beta1",
-    manifest={"PredictRequest", "PredictResponse"},
+    manifest={"PredictRequest", "PredictResponse",},
 )
 
 
@@ -142,12 +142,14 @@ class PredictRequest(proto.Message):
     """
 
     name = proto.Field(proto.STRING, number=1)
-    user_event = proto.Field(proto.MESSAGE, number=2, message=gcr_user_event.UserEvent)
+    user_event = proto.Field(proto.MESSAGE, number=2, message=gcr_user_event.UserEvent,)
     page_size = proto.Field(proto.INT32, number=7)
     page_token = proto.Field(proto.STRING, number=8)
     filter = proto.Field(proto.STRING, number=3)
     dry_run = proto.Field(proto.BOOL, number=4)
-    params = proto.MapField(proto.STRING, proto.MESSAGE, number=6, message=struct.Value)
+    params = proto.MapField(
+        proto.STRING, proto.MESSAGE, number=6, message=struct.Value,
+    )
     labels = proto.MapField(proto.STRING, proto.STRING, number=9)
 
 
@@ -200,19 +202,19 @@ class PredictResponse(proto.Message):
 
         id = proto.Field(proto.STRING, number=1)
         item_metadata = proto.MapField(
-            proto.STRING, proto.MESSAGE, number=2, message=struct.Value
+            proto.STRING, proto.MESSAGE, number=2, message=struct.Value,
         )
 
     @property
     def raw_page(self):
         return self
 
-    results = proto.RepeatedField(proto.MESSAGE, number=1, message=PredictionResult)
+    results = proto.RepeatedField(proto.MESSAGE, number=1, message=PredictionResult,)
     recommendation_token = proto.Field(proto.STRING, number=2)
     items_missing_in_catalog = proto.RepeatedField(proto.STRING, number=3)
     dry_run = proto.Field(proto.BOOL, number=4)
     metadata = proto.MapField(
-        proto.STRING, proto.MESSAGE, number=5, message=struct.Value
+        proto.STRING, proto.MESSAGE, number=5, message=struct.Value,
     )
     next_page_token = proto.Field(proto.STRING, number=6)
 

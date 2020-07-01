@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import abc
 import typing
 
 from google import auth
+from google.api_core import exceptions  # type: ignore
 from google.api_core import operations_v1  # type: ignore
 from google.auth import credentials  # type: ignore
 
@@ -29,7 +30,7 @@ from google.cloud.recommendationengine_v1beta1.types import user_event_service
 from google.longrunning import operations_pb2 as operations  # type: ignore
 
 
-class UserEventServiceTransport(metaclass=abc.ABCMeta):
+class UserEventServiceTransport(abc.ABC):
     """Abstract transport class for UserEventService."""
 
     AUTH_SCOPES = ("https://www.googleapis.com/auth/cloud-platform",)
@@ -39,6 +40,9 @@ class UserEventServiceTransport(metaclass=abc.ABCMeta):
         *,
         host: str = "recommendationengine.googleapis.com",
         credentials: credentials.Credentials = None,
+        credentials_file: typing.Optional[str] = None,
+        scopes: typing.Optional[typing.Sequence[str]] = AUTH_SCOPES,
+        **kwargs,
     ) -> None:
         """Instantiate the transport.
 
@@ -49,6 +53,10 @@ class UserEventServiceTransport(metaclass=abc.ABCMeta):
                 credentials identify the application to the service; if none
                 are specified, the client will attempt to ascertain the
                 credentials from the environment.
+            credentials_file (Optional[str]): A file with credentials that can
+                be loaded with :func:`google.auth.load_credentials_from_file`.
+                This argument is mutually exclusive with credentials.
+            scope (Optional[Sequence[str]]): A list of scopes.
         """
         # Save the hostname. Default to port 443 (HTTPS) if none is specified.
         if ":" not in host:
@@ -57,8 +65,17 @@ class UserEventServiceTransport(metaclass=abc.ABCMeta):
 
         # If no credentials are provided, then determine the appropriate
         # defaults.
-        if credentials is None:
-            credentials, _ = auth.default(scopes=self.AUTH_SCOPES)
+        if credentials and credentials_file:
+            raise exceptions.DuplicateCredentialArgs(
+                "'credentials_file' and 'credentials' are mutually exclusive"
+            )
+
+        if credentials_file is not None:
+            credentials, _ = auth.load_credentials_from_file(
+                credentials_file, scopes=scopes
+            )
+        elif credentials is None:
+            credentials, _ = auth.default(scopes=scopes)
 
         # Save the credentials.
         self._credentials = credentials
@@ -66,46 +83,55 @@ class UserEventServiceTransport(metaclass=abc.ABCMeta):
     @property
     def operations_client(self) -> operations_v1.OperationsClient:
         """Return the client designed to process long-running operations."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def write_user_event(
-        self
+        self,
     ) -> typing.Callable[
-        [user_event_service.WriteUserEventRequest], user_event.UserEvent
+        [user_event_service.WriteUserEventRequest],
+        typing.Union[user_event.UserEvent, typing.Awaitable[user_event.UserEvent]],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def collect_user_event(
-        self
+        self,
     ) -> typing.Callable[
-        [user_event_service.CollectUserEventRequest], httpbody.HttpBody
+        [user_event_service.CollectUserEventRequest],
+        typing.Union[httpbody.HttpBody, typing.Awaitable[httpbody.HttpBody]],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def list_user_events(
-        self
+        self,
     ) -> typing.Callable[
         [user_event_service.ListUserEventsRequest],
-        user_event_service.ListUserEventsResponse,
+        typing.Union[
+            user_event_service.ListUserEventsResponse,
+            typing.Awaitable[user_event_service.ListUserEventsResponse],
+        ],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def purge_user_events(
-        self
+        self,
     ) -> typing.Callable[
-        [user_event_service.PurgeUserEventsRequest], operations.Operation
+        [user_event_service.PurgeUserEventsRequest],
+        typing.Union[operations.Operation, typing.Awaitable[operations.Operation]],
     ]:
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @property
     def import_user_events(
-        self
-    ) -> typing.Callable[[import_.ImportUserEventsRequest], operations.Operation]:
-        raise NotImplementedError
+        self,
+    ) -> typing.Callable[
+        [import_.ImportUserEventsRequest],
+        typing.Union[operations.Operation, typing.Awaitable[operations.Operation]],
+    ]:
+        raise NotImplementedError()
 
 
 __all__ = ("UserEventServiceTransport",)

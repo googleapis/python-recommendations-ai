@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class CreateCatalogItemRequest(proto.Message):
     """
 
     parent = proto.Field(proto.STRING, number=1)
-    catalog_item = proto.Field(proto.MESSAGE, number=2, message=catalog.CatalogItem)
+    catalog_item = proto.Field(proto.MESSAGE, number=2, message=catalog.CatalogItem,)
 
 
 class GetCatalogItemRequest(proto.Message):
@@ -104,7 +104,7 @@ class ListCatalogItemsResponse(proto.Message):
         return self
 
     catalog_items = proto.RepeatedField(
-        proto.MESSAGE, number=1, message=catalog.CatalogItem
+        proto.MESSAGE, number=1, message=catalog.CatalogItem,
     )
     next_page_token = proto.Field(proto.STRING, number=2)
 
@@ -126,8 +126,8 @@ class UpdateCatalogItemRequest(proto.Message):
     """
 
     name = proto.Field(proto.STRING, number=1)
-    catalog_item = proto.Field(proto.MESSAGE, number=2, message=catalog.CatalogItem)
-    update_mask = proto.Field(proto.MESSAGE, number=3, message=field_mask.FieldMask)
+    catalog_item = proto.Field(proto.MESSAGE, number=2, message=catalog.CatalogItem,)
+    update_mask = proto.Field(proto.MESSAGE, number=3, message=field_mask.FieldMask,)
 
 
 class DeleteCatalogItemRequest(proto.Message):

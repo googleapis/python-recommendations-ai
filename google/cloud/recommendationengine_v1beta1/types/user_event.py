@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -111,13 +111,13 @@ class UserEvent(proto.Message):
         BATCH_UPLOAD = 3
 
     event_type = proto.Field(proto.STRING, number=1)
-    user_info = proto.Field(proto.MESSAGE, number=2, message="UserInfo")
-    event_detail = proto.Field(proto.MESSAGE, number=3, message="EventDetail")
+    user_info = proto.Field(proto.MESSAGE, number=2, message="UserInfo",)
+    event_detail = proto.Field(proto.MESSAGE, number=3, message="EventDetail",)
     product_event_detail = proto.Field(
-        proto.MESSAGE, number=4, message="ProductEventDetail"
+        proto.MESSAGE, number=4, message="ProductEventDetail",
     )
-    event_time = proto.Field(proto.MESSAGE, number=5, message=timestamp.Timestamp)
-    event_source = proto.Field(proto.ENUM, number=6, enum=EventSource)
+    event_time = proto.Field(proto.MESSAGE, number=5, message=timestamp.Timestamp,)
+    event_source = proto.Field(proto.ENUM, number=6, enum=EventSource,)
 
 
 class UserInfo(proto.Message):
@@ -230,7 +230,7 @@ class EventDetail(proto.Message):
     page_view_id = proto.Field(proto.STRING, number=2)
     experiment_ids = proto.RepeatedField(proto.STRING, number=3)
     recommendation_token = proto.Field(proto.STRING, number=4)
-    event_attributes = proto.Field(proto.MESSAGE, number=5, message=common.FeatureMap)
+    event_attributes = proto.Field(proto.MESSAGE, number=5, message=common.FeatureMap,)
 
 
 class ProductEventDetail(proto.Message):
@@ -297,15 +297,15 @@ class ProductEventDetail(proto.Message):
 
     search_query = proto.Field(proto.STRING, number=1)
     page_categories = proto.RepeatedField(
-        proto.MESSAGE, number=2, message=catalog.CatalogItem.CategoryHierarchy
+        proto.MESSAGE, number=2, message=catalog.CatalogItem.CategoryHierarchy,
     )
     product_details = proto.RepeatedField(
-        proto.MESSAGE, number=3, message="ProductDetail"
+        proto.MESSAGE, number=3, message="ProductDetail",
     )
     list_id = proto.Field(proto.STRING, number=4)
     cart_id = proto.Field(proto.STRING, number=5)
     purchase_transaction = proto.Field(
-        proto.MESSAGE, number=6, message="PurchaseTransaction"
+        proto.MESSAGE, number=6, message="PurchaseTransaction",
     )
 
 
@@ -400,11 +400,11 @@ class ProductDetail(proto.Message):
     original_price = proto.Field(proto.FLOAT, number=3)
     display_price = proto.Field(proto.FLOAT, number=4)
     stock_state = proto.Field(
-        proto.ENUM, number=5, enum=catalog.ProductCatalogItem.StockState
+        proto.ENUM, number=5, enum=catalog.ProductCatalogItem.StockState,
     )
     quantity = proto.Field(proto.INT32, number=6)
     available_quantity = proto.Field(proto.INT32, number=7)
-    item_attributes = proto.Field(proto.MESSAGE, number=8, message=common.FeatureMap)
+    item_attributes = proto.Field(proto.MESSAGE, number=8, message=common.FeatureMap,)
 
 
 __all__ = tuple(sorted(__protobuf__.manifest))

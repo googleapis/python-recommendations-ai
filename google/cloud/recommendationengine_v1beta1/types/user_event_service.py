@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ class PurgeUserEventsMetadata(proto.Message):
     """
 
     operation_name = proto.Field(proto.STRING, number=1)
-    create_time = proto.Field(proto.MESSAGE, number=2, message=timestamp.Timestamp)
+    create_time = proto.Field(proto.MESSAGE, number=2, message=timestamp.Timestamp,)
 
 
 class PurgeUserEventsResponse(proto.Message):
@@ -109,7 +109,7 @@ class PurgeUserEventsResponse(proto.Message):
 
     purged_events_count = proto.Field(proto.INT64, number=1)
     user_events_sample = proto.RepeatedField(
-        proto.MESSAGE, number=2, message=gcr_user_event.UserEvent
+        proto.MESSAGE, number=2, message=gcr_user_event.UserEvent,
     )
 
 
@@ -125,7 +125,7 @@ class WriteUserEventRequest(proto.Message):
     """
 
     parent = proto.Field(proto.STRING, number=1)
-    user_event = proto.Field(proto.MESSAGE, number=2, message=gcr_user_event.UserEvent)
+    user_event = proto.Field(proto.MESSAGE, number=2, message=gcr_user_event.UserEvent,)
 
 
 class CollectUserEventRequest(proto.Message):
@@ -232,7 +232,7 @@ class ListUserEventsResponse(proto.Message):
         return self
 
     user_events = proto.RepeatedField(
-        proto.MESSAGE, number=1, message=gcr_user_event.UserEvent
+        proto.MESSAGE, number=1, message=gcr_user_event.UserEvent,
     )
     next_page_token = proto.Field(proto.STRING, number=2)
 
