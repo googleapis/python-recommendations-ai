@@ -107,6 +107,8 @@ class PredictionApiKeyRegistryAsyncClient:
         self,
         request: prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest = None,
         *,
+        parent: str = None,
+        prediction_api_key_registration: prediction_apikey_registry_service.PredictionApiKeyRegistration = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -117,6 +119,18 @@ class PredictionApiKeyRegistryAsyncClient:
             request (:class:`~.prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest`):
                 The request object. Request message for the
                 `CreatePredictionApiKeyRegistration` method.
+            parent (:class:`str`):
+                Required. The parent resource path.
+                ``projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store``
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            prediction_api_key_registration (:class:`~.prediction_apikey_registry_service.PredictionApiKeyRegistration`):
+                Required. The prediction API key
+                registration.
+                This corresponds to the ``prediction_api_key_registration`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -129,10 +143,25 @@ class PredictionApiKeyRegistryAsyncClient:
                 Registered Api Key.
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any([parent, prediction_api_key_registration]):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(
             request
         )
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if prediction_api_key_registration is not None:
+            request.prediction_api_key_registration = prediction_api_key_registration
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -158,6 +187,7 @@ class PredictionApiKeyRegistryAsyncClient:
         self,
         request: prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest = None,
         *,
+        parent: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -169,6 +199,12 @@ class PredictionApiKeyRegistryAsyncClient:
             request (:class:`~.prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest`):
                 The request object. Request message for the
                 `ListPredictionApiKeyRegistrations`.
+            parent (:class:`str`):
+                Required. The parent placement resource name such as
+                "projects/1234/locations/global/catalogs/default_catalog/eventStores/default_event_store".
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -186,10 +222,23 @@ class PredictionApiKeyRegistryAsyncClient:
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any([parent]):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(
             request
         )
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -221,6 +270,7 @@ class PredictionApiKeyRegistryAsyncClient:
         self,
         request: prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest = None,
         *,
+        name: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -231,6 +281,13 @@ class PredictionApiKeyRegistryAsyncClient:
             request (:class:`~.prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest`):
                 The request object. Request message for
                 `DeletePredictionApiKeyRegistration` method.
+            name (:class:`str`):
+                Required. The API key to unregister including full
+                resource path.
+                ``projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/predictionApiKeyRegistrations/<YOUR_API_KEY>``
+                This corresponds to the ``name`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -239,10 +296,23 @@ class PredictionApiKeyRegistryAsyncClient:
                 sent along with the request as metadata.
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        if request is not None and any([name]):
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(
             request
         )
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if name is not None:
+            request.name = name
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.

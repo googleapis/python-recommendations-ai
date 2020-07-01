@@ -48,6 +48,7 @@ from google.cloud.recommendationengine_v1beta1.types import catalog
 from google.cloud.recommendationengine_v1beta1.types import common
 from google.cloud.recommendationengine_v1beta1.types import import_
 from google.cloud.recommendationengine_v1beta1.types import user_event
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event_service
 from google.longrunning import operations_pb2
 from google.oauth2 import service_account
@@ -339,9 +340,9 @@ def test_write_user_event(transport: str = "grpc"):
         type(client._transport.write_user_event), "__call__"
     ) as call:
         # Designate an appropriate return value for the call.
-        call.return_value = user_event.UserEvent(
+        call.return_value = gcr_user_event.UserEvent(
             event_type="event_type_value",
-            event_source=user_event.UserEvent.EventSource.AUTOML,
+            event_source=gcr_user_event.UserEvent.EventSource.AUTOML,
         )
 
         response = client.write_user_event(request)
@@ -353,9 +354,9 @@ def test_write_user_event(transport: str = "grpc"):
         assert args[0] == request
 
     # Establish that the response is the type that we expect.
-    assert isinstance(response, user_event.UserEvent)
+    assert isinstance(response, gcr_user_event.UserEvent)
     assert response.event_type == "event_type_value"
-    assert response.event_source == user_event.UserEvent.EventSource.AUTOML
+    assert response.event_source == gcr_user_event.UserEvent.EventSource.AUTOML
 
 
 @pytest.mark.asyncio
@@ -374,9 +375,9 @@ async def test_write_user_event_async(transport: str = "grpc_asyncio"):
     ) as call:
         # Designate an appropriate return value for the call.
         call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
-            user_event.UserEvent(
+            gcr_user_event.UserEvent(
                 event_type="event_type_value",
-                event_source=user_event.UserEvent.EventSource.AUTOML,
+                event_source=gcr_user_event.UserEvent.EventSource.AUTOML,
             )
         )
 
@@ -389,9 +390,9 @@ async def test_write_user_event_async(transport: str = "grpc_asyncio"):
         assert args[0] == request
 
     # Establish that the response is the type that we expect.
-    assert isinstance(response, user_event.UserEvent)
+    assert isinstance(response, gcr_user_event.UserEvent)
     assert response.event_type == "event_type_value"
-    assert response.event_source == user_event.UserEvent.EventSource.AUTOML
+    assert response.event_source == gcr_user_event.UserEvent.EventSource.AUTOML
 
 
 def test_write_user_event_field_headers():
@@ -406,7 +407,7 @@ def test_write_user_event_field_headers():
     with mock.patch.object(
         type(client._transport.write_user_event), "__call__"
     ) as call:
-        call.return_value = user_event.UserEvent()
+        call.return_value = gcr_user_event.UserEvent()
 
         client.write_user_event(request)
 
@@ -436,7 +437,7 @@ async def test_write_user_event_field_headers_async():
         type(client._client._transport.write_user_event), "__call__"
     ) as call:
         call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
-            user_event.UserEvent()
+            gcr_user_event.UserEvent()
         )
 
         await client.write_user_event(request)
@@ -449,6 +450,95 @@ async def test_write_user_event_field_headers_async():
     # Establish that the field header was sent.
     _, _, kw = call.mock_calls[0]
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
+
+
+def test_write_user_event_flattened():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.write_user_event), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = gcr_user_event.UserEvent()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.write_user_event(
+            parent="parent_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].user_event == gcr_user_event.UserEvent(
+            event_type="event_type_value"
+        )
+
+
+def test_write_user_event_flattened_error():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.write_user_event(
+            user_event_service.WriteUserEventRequest(),
+            parent="parent_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_write_user_event_flattened_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._client._transport.write_user_event), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = gcr_user_event.UserEvent()
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            gcr_user_event.UserEvent()
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.write_user_event(
+            parent="parent_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].user_event == gcr_user_event.UserEvent(
+            event_type="event_type_value"
+        )
+
+
+@pytest.mark.asyncio
+async def test_write_user_event_flattened_error_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.write_user_event(
+            user_event_service.WriteUserEventRequest(),
+            parent="parent_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
 
 
 def test_collect_user_event(transport: str = "grpc"):
@@ -571,6 +661,101 @@ async def test_collect_user_event_field_headers_async():
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
 
 
+def test_collect_user_event_flattened():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.collect_user_event), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = httpbody.HttpBody()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.collect_user_event(
+            parent="parent_value",
+            user_event="user_event_value",
+            uri="uri_value",
+            ets=332,
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].user_event == "user_event_value"
+        assert args[0].uri == "uri_value"
+        assert args[0].ets == 332
+
+
+def test_collect_user_event_flattened_error():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.collect_user_event(
+            user_event_service.CollectUserEventRequest(),
+            parent="parent_value",
+            user_event="user_event_value",
+            uri="uri_value",
+            ets=332,
+        )
+
+
+@pytest.mark.asyncio
+async def test_collect_user_event_flattened_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._client._transport.collect_user_event), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = httpbody.HttpBody()
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(httpbody.HttpBody())
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.collect_user_event(
+            parent="parent_value",
+            user_event="user_event_value",
+            uri="uri_value",
+            ets=332,
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].user_event == "user_event_value"
+        assert args[0].uri == "uri_value"
+        assert args[0].ets == 332
+
+
+@pytest.mark.asyncio
+async def test_collect_user_event_flattened_error_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.collect_user_event(
+            user_event_service.CollectUserEventRequest(),
+            parent="parent_value",
+            user_event="user_event_value",
+            uri="uri_value",
+            ets=332,
+        )
+
+
 def test_list_user_events(transport: str = "grpc"):
     client = UserEventServiceClient(
         credentials=credentials.AnonymousCredentials(), transport=transport,
@@ -691,6 +876,89 @@ async def test_list_user_events_field_headers_async():
     # Establish that the field header was sent.
     _, _, kw = call.mock_calls[0]
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
+
+
+def test_list_user_events_flattened():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.list_user_events), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = user_event_service.ListUserEventsResponse()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.list_user_events(
+            parent="parent_value", filter="filter_value",
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].filter == "filter_value"
+
+
+def test_list_user_events_flattened_error():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.list_user_events(
+            user_event_service.ListUserEventsRequest(),
+            parent="parent_value",
+            filter="filter_value",
+        )
+
+
+@pytest.mark.asyncio
+async def test_list_user_events_flattened_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._client._transport.list_user_events), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = user_event_service.ListUserEventsResponse()
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            user_event_service.ListUserEventsResponse()
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.list_user_events(
+            parent="parent_value", filter="filter_value",
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].filter == "filter_value"
+
+
+@pytest.mark.asyncio
+async def test_list_user_events_flattened_error_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.list_user_events(
+            user_event_service.ListUserEventsRequest(),
+            parent="parent_value",
+            filter="filter_value",
+        )
 
 
 def test_list_user_events_pager():
@@ -954,6 +1222,93 @@ async def test_purge_user_events_field_headers_async():
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
 
 
+def test_purge_user_events_flattened():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.purge_user_events), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = operations_pb2.Operation(name="operations/op")
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.purge_user_events(
+            parent="parent_value", filter="filter_value", force=True,
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].filter == "filter_value"
+        assert args[0].force == True
+
+
+def test_purge_user_events_flattened_error():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.purge_user_events(
+            user_event_service.PurgeUserEventsRequest(),
+            parent="parent_value",
+            filter="filter_value",
+            force=True,
+        )
+
+
+@pytest.mark.asyncio
+async def test_purge_user_events_flattened_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._client._transport.purge_user_events), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = operations_pb2.Operation(name="operations/op")
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            operations_pb2.Operation(name="operations/spam")
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.purge_user_events(
+            parent="parent_value", filter="filter_value", force=True,
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].filter == "filter_value"
+        assert args[0].force == True
+
+
+@pytest.mark.asyncio
+async def test_purge_user_events_flattened_error_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.purge_user_events(
+            user_event_service.PurgeUserEventsRequest(),
+            parent="parent_value",
+            filter="filter_value",
+            force=True,
+        )
+
+
 def test_import_user_events(transport: str = "grpc"):
     client = UserEventServiceClient(
         credentials=credentials.AnonymousCredentials(), transport=transport,
@@ -1068,6 +1423,131 @@ async def test_import_user_events_field_headers_async():
     # Establish that the field header was sent.
     _, _, kw = call.mock_calls[0]
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
+
+
+def test_import_user_events_flattened():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._transport.import_user_events), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = operations_pb2.Operation(name="operations/op")
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.import_user_events(
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].request_id == "request_id_value"
+        assert args[0].input_config == import_.InputConfig(
+            catalog_inline_source=import_.CatalogInlineSource(
+                catalog_items=[catalog.CatalogItem(id="id_value")]
+            )
+        )
+        assert args[0].errors_config == import_.ImportErrorsConfig(
+            gcs_prefix="gcs_prefix_value"
+        )
+
+
+def test_import_user_events_flattened_error():
+    client = UserEventServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.import_user_events(
+            import_.ImportUserEventsRequest(),
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_import_user_events_flattened_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client._client._transport.import_user_events), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = operations_pb2.Operation(name="operations/op")
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            operations_pb2.Operation(name="operations/spam")
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.import_user_events(
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+        assert args[0].parent == "parent_value"
+        assert args[0].request_id == "request_id_value"
+        assert args[0].input_config == import_.InputConfig(
+            catalog_inline_source=import_.CatalogInlineSource(
+                catalog_items=[catalog.CatalogItem(id="id_value")]
+            )
+        )
+        assert args[0].errors_config == import_.ImportErrorsConfig(
+            gcs_prefix="gcs_prefix_value"
+        )
+
+
+@pytest.mark.asyncio
+async def test_import_user_events_flattened_error_async():
+    client = UserEventServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.import_user_events(
+            import_.ImportUserEventsRequest(),
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
 
 
 def test_credentials_transport_error():
