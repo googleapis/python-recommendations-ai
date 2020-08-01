@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -55,8 +55,9 @@ class CreatePredictionApiKeyRegistrationRequest(proto.Message):
     """
 
     parent = proto.Field(proto.STRING, number=1)
+
     prediction_api_key_registration = proto.Field(
-        proto.MESSAGE, number=2, message=PredictionApiKeyRegistration
+        proto.MESSAGE, number=2, message=PredictionApiKeyRegistration,
     )
 
 
@@ -77,7 +78,9 @@ class ListPredictionApiKeyRegistrationsRequest(proto.Message):
     """
 
     parent = proto.Field(proto.STRING, number=1)
+
     page_size = proto.Field(proto.INT32, number=2)
+
     page_token = proto.Field(proto.STRING, number=3)
 
 
@@ -98,8 +101,9 @@ class ListPredictionApiKeyRegistrationsResponse(proto.Message):
         return self
 
     prediction_api_key_registrations = proto.RepeatedField(
-        proto.MESSAGE, number=1, message=PredictionApiKeyRegistration
+        proto.MESSAGE, number=1, message=PredictionApiKeyRegistration,
     )
+
     next_page_token = proto.Field(proto.STRING, number=2)
 
 

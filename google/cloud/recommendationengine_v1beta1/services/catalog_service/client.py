@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 #
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Tuple, Type, Union
+import os
+import re
+from typing import Callable, Dict, Sequence, Tuple, Type, Union
 import pkg_resources
 
 import google.api_core.client_options as ClientOptions  # type: ignore
@@ -24,9 +26,12 @@ from google.api_core import exceptions  # type: ignore
 from google.api_core import gapic_v1  # type: ignore
 from google.api_core import retry as retries  # type: ignore
 from google.auth import credentials  # type: ignore
+from google.auth.transport import mtls  # type: ignore
+from google.auth.exceptions import MutualTLSChannelError  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
 from google.api_core import operation
+from google.api_core import operation_async
 from google.cloud.recommendationengine_v1beta1.services.catalog_service import pagers
 from google.cloud.recommendationengine_v1beta1.types import catalog
 from google.cloud.recommendationengine_v1beta1.types import catalog_service
@@ -36,6 +41,7 @@ from google.protobuf import field_mask_pb2 as field_mask  # type: ignore
 
 from .transports.base import CatalogServiceTransport
 from .transports.grpc import CatalogServiceGrpcTransport
+from .transports.grpc_asyncio import CatalogServiceGrpcAsyncIOTransport
 
 
 class CatalogServiceClientMeta(type):
@@ -50,8 +56,9 @@ class CatalogServiceClientMeta(type):
         OrderedDict()
     )  # type: Dict[str, Type[CatalogServiceTransport]]
     _transport_registry["grpc"] = CatalogServiceGrpcTransport
+    _transport_registry["grpc_asyncio"] = CatalogServiceGrpcAsyncIOTransport
 
-    def get_transport_class(cls, label: str = None) -> Type[CatalogServiceTransport]:
+    def get_transport_class(cls, label: str = None,) -> Type[CatalogServiceTransport]:
         """Return an appropriate transport class.
 
         Args:
@@ -75,8 +82,38 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
     website.
     """
 
-    DEFAULT_OPTIONS = ClientOptions.ClientOptions(
-        api_endpoint="recommendationengine.googleapis.com"
+    @staticmethod
+    def _get_default_mtls_endpoint(api_endpoint):
+        """Convert api endpoint to mTLS endpoint.
+        Convert "*.sandbox.googleapis.com" and "*.googleapis.com" to
+        "*.mtls.sandbox.googleapis.com" and "*.mtls.googleapis.com" respectively.
+        Args:
+            api_endpoint (Optional[str]): the api endpoint to convert.
+        Returns:
+            str: converted mTLS api endpoint.
+        """
+        if not api_endpoint:
+            return api_endpoint
+
+        mtls_endpoint_re = re.compile(
+            r"(?P<name>[^.]+)(?P<mtls>\.mtls)?(?P<sandbox>\.sandbox)?(?P<googledomain>\.googleapis\.com)?"
+        )
+
+        m = mtls_endpoint_re.match(api_endpoint)
+        name, mtls, sandbox, googledomain = m.groups()
+        if mtls or not googledomain:
+            return api_endpoint
+
+        if sandbox:
+            return api_endpoint.replace(
+                "sandbox.googleapis.com", "mtls.sandbox.googleapis.com"
+            )
+
+        return api_endpoint.replace(".googleapis.com", ".mtls.googleapis.com")
+
+    DEFAULT_ENDPOINT = "recommendationengine.googleapis.com"
+    DEFAULT_MTLS_ENDPOINT = _get_default_mtls_endpoint.__func__(  # type: ignore
+        DEFAULT_ENDPOINT
     )
 
     @classmethod
@@ -104,7 +141,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         *,
         credentials: credentials.Credentials = None,
         transport: Union[str, CatalogServiceTransport] = None,
-        client_options: ClientOptions = DEFAULT_OPTIONS,
+        client_options: ClientOptions = None,
     ) -> None:
         """Instantiate the catalog service client.
 
@@ -117,27 +154,76 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
             transport (Union[str, ~.CatalogServiceTransport]): The
                 transport to use. If set to None, a transport is chosen
                 automatically.
-            client_options (ClientOptions): Custom options for the client.
+            client_options (ClientOptions): Custom options for the client. It
+                won't take effect if a ``transport`` instance is provided.
+                (1) The ``api_endpoint`` property can be used to override the
+                default endpoint provided by the client. GOOGLE_API_USE_MTLS
+                environment variable can also be used to override the endpoint:
+                "always" (always use the default mTLS endpoint), "never" (always
+                use the default regular endpoint, this is the default value for
+                the environment variable) and "auto" (auto switch to the default
+                mTLS endpoint if client SSL credentials is present). However,
+                the ``api_endpoint`` property takes precedence if provided.
+                (2) The ``client_cert_source`` property is used to provide client
+                SSL credentials for mutual TLS transport. If not provided, the
+                default SSL credentials will be used if present.
+
+        Raises:
+            google.auth.exceptions.MutualTLSChannelError: If mutual TLS transport
+                creation failed for any reason.
         """
         if isinstance(client_options, dict):
             client_options = ClientOptions.from_dict(client_options)
+        if client_options is None:
+            client_options = ClientOptions.ClientOptions()
+
+        if client_options.api_endpoint is None:
+            use_mtls_env = os.getenv("GOOGLE_API_USE_MTLS", "never")
+            if use_mtls_env == "never":
+                client_options.api_endpoint = self.DEFAULT_ENDPOINT
+            elif use_mtls_env == "always":
+                client_options.api_endpoint = self.DEFAULT_MTLS_ENDPOINT
+            elif use_mtls_env == "auto":
+                has_client_cert_source = (
+                    client_options.client_cert_source is not None
+                    or mtls.has_default_client_cert_source()
+                )
+                client_options.api_endpoint = (
+                    self.DEFAULT_MTLS_ENDPOINT
+                    if has_client_cert_source
+                    else self.DEFAULT_ENDPOINT
+                )
+            else:
+                raise MutualTLSChannelError(
+                    "Unsupported GOOGLE_API_USE_MTLS value. Accepted values: never, auto, always"
+                )
 
         # Save or instantiate the transport.
         # Ordinarily, we provide the transport, but allowing a custom transport
         # instance provides an extensibility point for unusual situations.
         if isinstance(transport, CatalogServiceTransport):
-            if credentials:
+            # transport is a CatalogServiceTransport instance.
+            if credentials or client_options.credentials_file:
                 raise ValueError(
                     "When providing a transport instance, "
                     "provide its credentials directly."
+                )
+            if client_options.scopes:
+                raise ValueError(
+                    "When providing a transport instance, "
+                    "provide its scopes directly."
                 )
             self._transport = transport
         else:
             Transport = type(self).get_transport_class(transport)
             self._transport = Transport(
                 credentials=credentials,
-                host=client_options.api_endpoint
-                or "recommendationengine.googleapis.com",
+                credentials_file=client_options.credentials_file,
+                host=client_options.api_endpoint,
+                scopes=client_options.scopes,
+                api_mtls_endpoint=client_options.api_endpoint,
+                client_cert_source=client_options.client_cert_source,
+                quota_project_id=client_options.quota_project_id,
             )
 
     def create_catalog_item(
@@ -169,18 +255,25 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         """
         # Create or coerce a protobuf request object.
 
-        request = catalog_service.CreateCatalogItemRequest(request)
+        # Minor optimization to avoid making a copy if the user passes
+        # in a catalog_service.CreateCatalogItemRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(request, catalog_service.CreateCatalogItemRequest):
+            request = catalog_service.CreateCatalogItemRequest(request)
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.create_catalog_item,
-            default_timeout=None,
-            client_info=_client_info,
+        rpc = self._transport._wrapped_methods[self._transport.create_catalog_item]
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("parent", request.parent),)),
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # Done; return the response.
         return response
@@ -222,26 +315,29 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         # Create or coerce a protobuf request object.
         # Sanity check: If we got a request object, we should *not* have
         # gotten any keyword arguments that map to the request.
-        if request is not None and any([name]):
+        has_flattened_params = any([name])
+        if request is not None and has_flattened_params:
             raise ValueError(
                 "If the `request` argument is set, then none of "
                 "the individual field arguments should be set."
             )
 
-        request = catalog_service.GetCatalogItemRequest(request)
+        # Minor optimization to avoid making a copy if the user passes
+        # in a catalog_service.GetCatalogItemRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(request, catalog_service.GetCatalogItemRequest):
+            request = catalog_service.GetCatalogItemRequest(request)
 
-        # If we have keyword arguments corresponding to fields on the
-        # request, apply these.
-        if name is not None:
-            request.name = name
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if name is not None:
+                request.name = name
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.get_catalog_item,
-            default_timeout=None,
-            client_info=_client_info,
-        )
+        rpc = self._transport._wrapped_methods[self._transport.get_catalog_item]
 
         # Certain fields should be provided within the metadata header;
         # add these here.
@@ -250,7 +346,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # Done; return the response.
         return response
@@ -287,15 +383,16 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         """
         # Create or coerce a protobuf request object.
 
-        request = catalog_service.ListCatalogItemsRequest(request)
+        # Minor optimization to avoid making a copy if the user passes
+        # in a catalog_service.ListCatalogItemsRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(request, catalog_service.ListCatalogItemsRequest):
+            request = catalog_service.ListCatalogItemsRequest(request)
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.list_catalog_items,
-            default_timeout=None,
-            client_info=_client_info,
-        )
+        rpc = self._transport._wrapped_methods[self._transport.list_catalog_items]
 
         # Certain fields should be provided within the metadata header;
         # add these here.
@@ -304,12 +401,12 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # This method is paged; wrap the response in a pager, which provides
         # an `__iter__` convenience method.
         response = pagers.ListCatalogItemsPager(
-            method=rpc, request=request, response=response
+            method=rpc, request=request, response=response, metadata=metadata,
         )
 
         # Done; return the response.
@@ -361,33 +458,40 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         # Create or coerce a protobuf request object.
         # Sanity check: If we got a request object, we should *not* have
         # gotten any keyword arguments that map to the request.
-        if request is not None and any([catalog_item, update_mask]):
+        has_flattened_params = any([catalog_item, update_mask])
+        if request is not None and has_flattened_params:
             raise ValueError(
                 "If the `request` argument is set, then none of "
                 "the individual field arguments should be set."
             )
 
-        request = catalog_service.UpdateCatalogItemRequest(request)
+        # Minor optimization to avoid making a copy if the user passes
+        # in a catalog_service.UpdateCatalogItemRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(request, catalog_service.UpdateCatalogItemRequest):
+            request = catalog_service.UpdateCatalogItemRequest(request)
 
-        # If we have keyword arguments corresponding to fields on the
-        # request, apply these.
-        if catalog_item is not None:
-            request.catalog_item = catalog_item
-        # If we have keyword arguments corresponding to fields on the
-        # request, apply these.
-        if update_mask is not None:
-            request.update_mask = update_mask
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if catalog_item is not None:
+                request.catalog_item = catalog_item
+            if update_mask is not None:
+                request.update_mask = update_mask
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.update_catalog_item,
-            default_timeout=None,
-            client_info=_client_info,
+        rpc = self._transport._wrapped_methods[self._transport.update_catalog_item]
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("name", request.name),)),
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # Done; return the response.
         return response
@@ -423,29 +527,40 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         # Create or coerce a protobuf request object.
         # Sanity check: If we got a request object, we should *not* have
         # gotten any keyword arguments that map to the request.
-        if request is not None and any([name]):
+        has_flattened_params = any([name])
+        if request is not None and has_flattened_params:
             raise ValueError(
                 "If the `request` argument is set, then none of "
                 "the individual field arguments should be set."
             )
 
-        request = catalog_service.DeleteCatalogItemRequest(request)
+        # Minor optimization to avoid making a copy if the user passes
+        # in a catalog_service.DeleteCatalogItemRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(request, catalog_service.DeleteCatalogItemRequest):
+            request = catalog_service.DeleteCatalogItemRequest(request)
 
-        # If we have keyword arguments corresponding to fields on the
-        # request, apply these.
-        if name is not None:
-            request.name = name
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if name is not None:
+                request.name = name
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.delete_catalog_item,
-            default_timeout=None,
-            client_info=_client_info,
+        rpc = self._transport._wrapped_methods[self._transport.delete_catalog_item]
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("name", request.name),)),
         )
 
         # Send the request.
-        rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        rpc(
+            request, retry=retry, timeout=timeout, metadata=metadata,
+        )
 
     def import_catalog_items(
         self,
@@ -487,18 +602,25 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         """
         # Create or coerce a protobuf request object.
 
-        request = import_.ImportCatalogItemsRequest(request)
+        # Minor optimization to avoid making a copy if the user passes
+        # in a import_.ImportCatalogItemsRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(request, import_.ImportCatalogItemsRequest):
+            request = import_.ImportCatalogItemsRequest(request)
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.import_catalog_items,
-            default_timeout=None,
-            client_info=_client_info,
+        rpc = self._transport._wrapped_methods[self._transport.import_catalog_items]
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("parent", request.parent),)),
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # Wrap the response in an operation future.
         response = operation.from_gapic(
@@ -515,8 +637,8 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 try:
     _client_info = gapic_v1.client_info.ClientInfo(
         gapic_version=pkg_resources.get_distribution(
-            "google-cloud-recommendations-ai"
-        ).version
+            "google-cloud-recommendations-ai",
+        ).version,
     )
 except pkg_resources.DistributionNotFound:
     _client_info = gapic_v1.client_info.ClientInfo()
