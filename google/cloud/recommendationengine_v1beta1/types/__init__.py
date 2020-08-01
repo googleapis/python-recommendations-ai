@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 #
 
 from .common import FeatureMap
-from .catalog import CatalogItem, ProductCatalogItem, Image
+from .catalog import (
+    CatalogItem,
+    ProductCatalogItem,
+    Image,
+)
 from .user_event import (
     UserEvent,
     UserInfo,
@@ -25,7 +29,6 @@ from .user_event import (
     PurchaseTransaction,
     ProductDetail,
 )
-from .prediction_service import PredictRequest, PredictResponse
 from .import_ import (
     GcsSource,
     CatalogInlineSource,
@@ -48,13 +51,6 @@ from .user_event_service import (
     ListUserEventsRequest,
     ListUserEventsResponse,
 )
-from .prediction_apikey_registry_service import (
-    PredictionApiKeyRegistration,
-    CreatePredictionApiKeyRegistrationRequest,
-    ListPredictionApiKeyRegistrationsRequest,
-    ListPredictionApiKeyRegistrationsResponse,
-    DeletePredictionApiKeyRegistrationRequest,
-)
 from .catalog_service import (
     CreateCatalogItemRequest,
     GetCatalogItemRequest,
@@ -62,6 +58,17 @@ from .catalog_service import (
     ListCatalogItemsResponse,
     UpdateCatalogItemRequest,
     DeleteCatalogItemRequest,
+)
+from .prediction_apikey_registry_service import (
+    PredictionApiKeyRegistration,
+    CreatePredictionApiKeyRegistrationRequest,
+    ListPredictionApiKeyRegistrationsRequest,
+    ListPredictionApiKeyRegistrationsResponse,
+    DeletePredictionApiKeyRegistrationRequest,
+)
+from .prediction_service import (
+    PredictRequest,
+    PredictResponse,
 )
 
 
@@ -76,8 +83,6 @@ __all__ = (
     "ProductEventDetail",
     "PurchaseTransaction",
     "ProductDetail",
-    "PredictRequest",
-    "PredictResponse",
     "GcsSource",
     "CatalogInlineSource",
     "UserEventInlineSource",
@@ -96,15 +101,17 @@ __all__ = (
     "CollectUserEventRequest",
     "ListUserEventsRequest",
     "ListUserEventsResponse",
-    "PredictionApiKeyRegistration",
-    "CreatePredictionApiKeyRegistrationRequest",
-    "ListPredictionApiKeyRegistrationsRequest",
-    "ListPredictionApiKeyRegistrationsResponse",
-    "DeletePredictionApiKeyRegistrationRequest",
     "CreateCatalogItemRequest",
     "GetCatalogItemRequest",
     "ListCatalogItemsRequest",
     "ListCatalogItemsResponse",
     "UpdateCatalogItemRequest",
     "DeleteCatalogItemRequest",
+    "PredictionApiKeyRegistration",
+    "CreatePredictionApiKeyRegistrationRequest",
+    "ListPredictionApiKeyRegistrationsRequest",
+    "ListPredictionApiKeyRegistrationsResponse",
+    "DeletePredictionApiKeyRegistrationRequest",
+    "PredictRequest",
+    "PredictResponse",
 )
