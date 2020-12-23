@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +16,20 @@
 #
 
 from collections import OrderedDict
-from typing import Dict, Sequence, Tuple, Type, Union
+from distutils import util
+import os
+import re
+from typing import Callable, Dict, Optional, Sequence, Tuple, Type, Union
 import pkg_resources
 
-import google.api_core.client_options as ClientOptions  # type: ignore
+from google.api_core import client_options as client_options_lib  # type: ignore
 from google.api_core import exceptions  # type: ignore
 from google.api_core import gapic_v1  # type: ignore
 from google.api_core import retry as retries  # type: ignore
 from google.auth import credentials  # type: ignore
+from google.auth.transport import mtls  # type: ignore
+from google.auth.transport.grpc import SslCredentials  # type: ignore
+from google.auth.exceptions import MutualTLSChannelError  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
 from google.cloud.recommendationengine_v1beta1.services.prediction_api_key_registry import (
@@ -33,8 +39,9 @@ from google.cloud.recommendationengine_v1beta1.types import (
     prediction_apikey_registry_service,
 )
 
-from .transports.base import PredictionApiKeyRegistryTransport
+from .transports.base import PredictionApiKeyRegistryTransport, DEFAULT_CLIENT_INFO
 from .transports.grpc import PredictionApiKeyRegistryGrpcTransport
+from .transports.grpc_asyncio import PredictionApiKeyRegistryGrpcAsyncIOTransport
 
 
 class PredictionApiKeyRegistryClientMeta(type):
@@ -49,9 +56,10 @@ class PredictionApiKeyRegistryClientMeta(type):
         OrderedDict()
     )  # type: Dict[str, Type[PredictionApiKeyRegistryTransport]]
     _transport_registry["grpc"] = PredictionApiKeyRegistryGrpcTransport
+    _transport_registry["grpc_asyncio"] = PredictionApiKeyRegistryGrpcAsyncIOTransport
 
     def get_transport_class(
-        cls, label: str = None
+        cls, label: str = None,
     ) -> Type[PredictionApiKeyRegistryTransport]:
         """Return an appropriate transport class.
 
@@ -80,9 +88,55 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
     20 API keys per project.
     """
 
-    DEFAULT_OPTIONS = ClientOptions.ClientOptions(
-        api_endpoint="recommendationengine.googleapis.com"
+    @staticmethod
+    def _get_default_mtls_endpoint(api_endpoint):
+        """Convert api endpoint to mTLS endpoint.
+        Convert "*.sandbox.googleapis.com" and "*.googleapis.com" to
+        "*.mtls.sandbox.googleapis.com" and "*.mtls.googleapis.com" respectively.
+        Args:
+            api_endpoint (Optional[str]): the api endpoint to convert.
+        Returns:
+            str: converted mTLS api endpoint.
+        """
+        if not api_endpoint:
+            return api_endpoint
+
+        mtls_endpoint_re = re.compile(
+            r"(?P<name>[^.]+)(?P<mtls>\.mtls)?(?P<sandbox>\.sandbox)?(?P<googledomain>\.googleapis\.com)?"
+        )
+
+        m = mtls_endpoint_re.match(api_endpoint)
+        name, mtls, sandbox, googledomain = m.groups()
+        if mtls or not googledomain:
+            return api_endpoint
+
+        if sandbox:
+            return api_endpoint.replace(
+                "sandbox.googleapis.com", "mtls.sandbox.googleapis.com"
+            )
+
+        return api_endpoint.replace(".googleapis.com", ".mtls.googleapis.com")
+
+    DEFAULT_ENDPOINT = "recommendationengine.googleapis.com"
+    DEFAULT_MTLS_ENDPOINT = _get_default_mtls_endpoint.__func__(  # type: ignore
+        DEFAULT_ENDPOINT
     )
+
+    @classmethod
+    def from_service_account_info(cls, info: dict, *args, **kwargs):
+        """Creates an instance of this client using the provided credentials info.
+
+        Args:
+            info (dict): The service account private key info.
+            args: Additional arguments to pass to the constructor.
+            kwargs: Additional arguments to pass to the constructor.
+
+        Returns:
+            {@api.name}: The constructed client.
+        """
+        credentials = service_account.Credentials.from_service_account_info(info)
+        kwargs["credentials"] = credentials
+        return cls(*args, **kwargs)
 
     @classmethod
     def from_service_account_file(cls, filename: str, *args, **kwargs):
@@ -104,12 +158,81 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
     from_service_account_json = from_service_account_file
 
+    @property
+    def transport(self) -> PredictionApiKeyRegistryTransport:
+        """Return the transport used by the client instance.
+
+        Returns:
+            PredictionApiKeyRegistryTransport: The transport used by the client instance.
+        """
+        return self._transport
+
+    @staticmethod
+    def common_billing_account_path(billing_account: str,) -> str:
+        """Return a fully-qualified billing_account string."""
+        return "billingAccounts/{billing_account}".format(
+            billing_account=billing_account,
+        )
+
+    @staticmethod
+    def parse_common_billing_account_path(path: str) -> Dict[str, str]:
+        """Parse a billing_account path into its component segments."""
+        m = re.match(r"^billingAccounts/(?P<billing_account>.+?)$", path)
+        return m.groupdict() if m else {}
+
+    @staticmethod
+    def common_folder_path(folder: str,) -> str:
+        """Return a fully-qualified folder string."""
+        return "folders/{folder}".format(folder=folder,)
+
+    @staticmethod
+    def parse_common_folder_path(path: str) -> Dict[str, str]:
+        """Parse a folder path into its component segments."""
+        m = re.match(r"^folders/(?P<folder>.+?)$", path)
+        return m.groupdict() if m else {}
+
+    @staticmethod
+    def common_organization_path(organization: str,) -> str:
+        """Return a fully-qualified organization string."""
+        return "organizations/{organization}".format(organization=organization,)
+
+    @staticmethod
+    def parse_common_organization_path(path: str) -> Dict[str, str]:
+        """Parse a organization path into its component segments."""
+        m = re.match(r"^organizations/(?P<organization>.+?)$", path)
+        return m.groupdict() if m else {}
+
+    @staticmethod
+    def common_project_path(project: str,) -> str:
+        """Return a fully-qualified project string."""
+        return "projects/{project}".format(project=project,)
+
+    @staticmethod
+    def parse_common_project_path(path: str) -> Dict[str, str]:
+        """Parse a project path into its component segments."""
+        m = re.match(r"^projects/(?P<project>.+?)$", path)
+        return m.groupdict() if m else {}
+
+    @staticmethod
+    def common_location_path(project: str, location: str,) -> str:
+        """Return a fully-qualified location string."""
+        return "projects/{project}/locations/{location}".format(
+            project=project, location=location,
+        )
+
+    @staticmethod
+    def parse_common_location_path(path: str) -> Dict[str, str]:
+        """Parse a location path into its component segments."""
+        m = re.match(r"^projects/(?P<project>.+?)/locations/(?P<location>.+?)$", path)
+        return m.groupdict() if m else {}
+
     def __init__(
         self,
         *,
-        credentials: credentials.Credentials = None,
-        transport: Union[str, PredictionApiKeyRegistryTransport] = None,
-        client_options: ClientOptions = DEFAULT_OPTIONS,
+        credentials: Optional[credentials.Credentials] = None,
+        transport: Union[str, PredictionApiKeyRegistryTransport, None] = None,
+        client_options: Optional[client_options_lib.ClientOptions] = None,
+        client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
     ) -> None:
         """Instantiate the prediction api key registry client.
 
@@ -122,27 +245,102 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             transport (Union[str, ~.PredictionApiKeyRegistryTransport]): The
                 transport to use. If set to None, a transport is chosen
                 automatically.
-            client_options (ClientOptions): Custom options for the client.
+            client_options (client_options_lib.ClientOptions): Custom options for the
+                client. It won't take effect if a ``transport`` instance is provided.
+                (1) The ``api_endpoint`` property can be used to override the
+                default endpoint provided by the client. GOOGLE_API_USE_MTLS_ENDPOINT
+                environment variable can also be used to override the endpoint:
+                "always" (always use the default mTLS endpoint), "never" (always
+                use the default regular endpoint) and "auto" (auto switch to the
+                default mTLS endpoint if client certificate is present, this is
+                the default value). However, the ``api_endpoint`` property takes
+                precedence if provided.
+                (2) If GOOGLE_API_USE_CLIENT_CERTIFICATE environment variable
+                is "true", then the ``client_cert_source`` property can be used
+                to provide client certificate for mutual TLS transport. If
+                not provided, the default SSL client certificate will be used if
+                present. If GOOGLE_API_USE_CLIENT_CERTIFICATE is "false" or not
+                set, no client certificate will be used.
+            client_info (google.api_core.gapic_v1.client_info.ClientInfo):
+                The client info used to send a user-agent string along with
+                API requests. If ``None``, then default info will be used.
+                Generally, you only need to set this if you're developing
+                your own client library.
+
+        Raises:
+            google.auth.exceptions.MutualTLSChannelError: If mutual TLS transport
+                creation failed for any reason.
         """
         if isinstance(client_options, dict):
-            client_options = ClientOptions.from_dict(client_options)
+            client_options = client_options_lib.from_dict(client_options)
+        if client_options is None:
+            client_options = client_options_lib.ClientOptions()
+
+        # Create SSL credentials for mutual TLS if needed.
+        use_client_cert = bool(
+            util.strtobool(os.getenv("GOOGLE_API_USE_CLIENT_CERTIFICATE", "false"))
+        )
+
+        ssl_credentials = None
+        is_mtls = False
+        if use_client_cert:
+            if client_options.client_cert_source:
+                import grpc  # type: ignore
+
+                cert, key = client_options.client_cert_source()
+                ssl_credentials = grpc.ssl_channel_credentials(
+                    certificate_chain=cert, private_key=key
+                )
+                is_mtls = True
+            else:
+                creds = SslCredentials()
+                is_mtls = creds.is_mtls
+                ssl_credentials = creds.ssl_credentials if is_mtls else None
+
+        # Figure out which api endpoint to use.
+        if client_options.api_endpoint is not None:
+            api_endpoint = client_options.api_endpoint
+        else:
+            use_mtls_env = os.getenv("GOOGLE_API_USE_MTLS_ENDPOINT", "auto")
+            if use_mtls_env == "never":
+                api_endpoint = self.DEFAULT_ENDPOINT
+            elif use_mtls_env == "always":
+                api_endpoint = self.DEFAULT_MTLS_ENDPOINT
+            elif use_mtls_env == "auto":
+                api_endpoint = (
+                    self.DEFAULT_MTLS_ENDPOINT if is_mtls else self.DEFAULT_ENDPOINT
+                )
+            else:
+                raise MutualTLSChannelError(
+                    "Unsupported GOOGLE_API_USE_MTLS_ENDPOINT value. Accepted values: never, auto, always"
+                )
 
         # Save or instantiate the transport.
         # Ordinarily, we provide the transport, but allowing a custom transport
         # instance provides an extensibility point for unusual situations.
         if isinstance(transport, PredictionApiKeyRegistryTransport):
-            if credentials:
+            # transport is a PredictionApiKeyRegistryTransport instance.
+            if credentials or client_options.credentials_file:
                 raise ValueError(
                     "When providing a transport instance, "
                     "provide its credentials directly."
+                )
+            if client_options.scopes:
+                raise ValueError(
+                    "When providing a transport instance, "
+                    "provide its scopes directly."
                 )
             self._transport = transport
         else:
             Transport = type(self).get_transport_class(transport)
             self._transport = Transport(
                 credentials=credentials,
-                host=client_options.api_endpoint
-                or "recommendationengine.googleapis.com",
+                credentials_file=client_options.credentials_file,
+                host=api_endpoint,
+                scopes=client_options.scopes,
+                ssl_channel_credentials=ssl_credentials,
+                quota_project_id=client_options.quota_project_id,
+                client_info=client_info,
             )
 
     def create_prediction_api_key_registration(
@@ -172,20 +370,32 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         """
         # Create or coerce a protobuf request object.
 
-        request = prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(
-            request
-        )
+        # Minor optimization to avoid making a copy if the user passes
+        # in a prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(
+            request,
+            prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest,
+        ):
+            request = prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(
+                request
+            )
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.create_prediction_api_key_registration,
-            default_timeout=None,
-            client_info=_client_info,
+        rpc = self._transport._wrapped_methods[
+            self._transport.create_prediction_api_key_registration
+        ]
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("parent", request.parent),)),
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # Done; return the response.
         return response
@@ -223,17 +433,23 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         """
         # Create or coerce a protobuf request object.
 
-        request = prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(
-            request
-        )
+        # Minor optimization to avoid making a copy if the user passes
+        # in a prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(
+            request,
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest,
+        ):
+            request = prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(
+                request
+            )
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.list_prediction_api_key_registrations,
-            default_timeout=None,
-            client_info=_client_info,
-        )
+        rpc = self._transport._wrapped_methods[
+            self._transport.list_prediction_api_key_registrations
+        ]
 
         # Certain fields should be provided within the metadata header;
         # add these here.
@@ -242,12 +458,12 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         )
 
         # Send the request.
-        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        response = rpc(request, retry=retry, timeout=timeout, metadata=metadata,)
 
         # This method is paged; wrap the response in a pager, which provides
         # an `__iter__` convenience method.
         response = pagers.ListPredictionApiKeyRegistrationsPager(
-            method=rpc, request=request, response=response
+            method=rpc, request=request, response=response, metadata=metadata,
         )
 
         # Done; return the response.
@@ -276,30 +492,44 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         """
         # Create or coerce a protobuf request object.
 
-        request = prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(
-            request
-        )
+        # Minor optimization to avoid making a copy if the user passes
+        # in a prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest.
+        # There's no risk of modifying the input as we've already verified
+        # there are no flattened fields.
+        if not isinstance(
+            request,
+            prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest,
+        ):
+            request = prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(
+                request
+            )
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
-        rpc = gapic_v1.method.wrap_method(
-            self._transport.delete_prediction_api_key_registration,
-            default_timeout=None,
-            client_info=_client_info,
+        rpc = self._transport._wrapped_methods[
+            self._transport.delete_prediction_api_key_registration
+        ]
+
+        # Certain fields should be provided within the metadata header;
+        # add these here.
+        metadata = tuple(metadata) + (
+            gapic_v1.routing_header.to_grpc_metadata((("name", request.name),)),
         )
 
         # Send the request.
-        rpc(request, retry=retry, timeout=timeout, metadata=metadata)
+        rpc(
+            request, retry=retry, timeout=timeout, metadata=metadata,
+        )
 
 
 try:
-    _client_info = gapic_v1.client_info.ClientInfo(
+    DEFAULT_CLIENT_INFO = gapic_v1.client_info.ClientInfo(
         gapic_version=pkg_resources.get_distribution(
-            "google-cloud-recommendations-ai"
-        ).version
+            "google-cloud-recommendations-ai",
+        ).version,
     )
 except pkg_resources.DistributionNotFound:
-    _client_info = gapic_v1.client_info.ClientInfo()
+    DEFAULT_CLIENT_INFO = gapic_v1.client_info.ClientInfo()
 
 
 __all__ = ("PredictionApiKeyRegistryClient",)

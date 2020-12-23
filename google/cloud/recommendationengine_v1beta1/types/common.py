@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2019  Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import proto  # type: ignore
 
 
 __protobuf__ = proto.module(
-    package="google.cloud.recommendationengine.v1beta1", manifest={"FeatureMap"}
+    package="google.cloud.recommendationengine.v1beta1", manifest={"FeatureMap",},
 )
 
 
@@ -70,10 +70,11 @@ class FeatureMap(proto.Message):
         value = proto.RepeatedField(proto.FLOAT, number=1)
 
     categorical_features = proto.MapField(
-        proto.STRING, proto.MESSAGE, number=1, message=StringList
+        proto.STRING, proto.MESSAGE, number=1, message=StringList,
     )
+
     numerical_features = proto.MapField(
-        proto.STRING, proto.MESSAGE, number=2, message=FloatList
+        proto.STRING, proto.MESSAGE, number=2, message=FloatList,
     )
 
 
