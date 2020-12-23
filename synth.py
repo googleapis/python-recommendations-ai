@@ -19,21 +19,22 @@ import synthtool as s
 import synthtool.gcp as gcp
 from synthtool.languages import python
 
-gapic = gcp.GAPICMicrogenerator()
+gapic = gcp.GAPICBazel()
 common = gcp.CommonTemplates()
 
 # ----------------------------------------------------------------------------
 # Generate Recommendations AI GAPIC layer
 # ----------------------------------------------------------------------------
-library = gapic.py_library(
-    "recommendationengine", "v1beta1"
-)
+versions = ["v1beta1"]
+for version in versions:
+    library = gapic.py_library(
+        service="recommendationengine",
+        version=version,
+        bazel_target=f"//google/cloud/recommendationengine/{version}:recommendationengine-{version}-py"
+    )
 
-s.move(library, excludes=["setup.py", "docs/index.rst"])
+    s.move(library, excludes=["setup.py", "docs/index.rst"])
 
-# correct license headers
-python.fix_pb2_headers()
-python.fix_pb2_grpc_headers()
 
 # rename library to recommendations ai, to be consistent with product branding
 s.replace(["google/**/*.py", "tests/**/*.py"], "google-cloud-recommendationengine", "google-cloud-recommendations-ai")
@@ -45,18 +46,7 @@ s.replace("google/**/import_.py", "gs://bucket/directory/\*\.json", "``gs://buck
 # ----------------------------------------------------------------------------
 # Add templated files
 # ----------------------------------------------------------------------------
-templated_files = common.py_library(cov_level=100)
+templated_files = common.py_library(cov_level=100, microgenerator=True)
 s.move(templated_files, excludes=[".coveragerc"])  # the microgenerator has a good coveragerc file
-s.replace(".gitignore", "bigquery/docs/generated", "htmlcov")  # temporary hack to ignore htmlcov
-
-# Remove 2.7 and 3.5 tests from noxfile.py
-s.replace("noxfile.py", '''\["2\.7", ''', '[')
-s.replace("noxfile.py", '''"3.5", ''', '')
-
-# Expand flake errors permitted to accomodate the Microgenerator
-# TODO: remove extra error codes once issues below are resolved
-# F401: https://github.com/googleapis/gapic-generator-python/issues/324
-# F841: local variable 'client'/'response' is assigned to but never use
-s.replace(".flake8", "ignore = .*", "ignore = E203, E266, E501, W503, F401, F841")
 
 s.shell.run(["nox", "-s", "blacken"], hide_output=False)
