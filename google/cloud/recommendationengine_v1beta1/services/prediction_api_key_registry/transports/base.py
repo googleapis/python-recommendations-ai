@@ -111,17 +111,41 @@ class PredictionApiKeyRegistryTransport(abc.ABC):
         self._wrapped_methods = {
             self.create_prediction_api_key_registration: gapic_v1.method.wrap_method(
                 self.create_prediction_api_key_registration,
-                default_timeout=None,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
                 client_info=client_info,
             ),
             self.list_prediction_api_key_registrations: gapic_v1.method.wrap_method(
                 self.list_prediction_api_key_registrations,
-                default_timeout=None,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
                 client_info=client_info,
             ),
             self.delete_prediction_api_key_registration: gapic_v1.method.wrap_method(
                 self.delete_prediction_api_key_registration,
-                default_timeout=None,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
                 client_info=client_info,
             ),
         }

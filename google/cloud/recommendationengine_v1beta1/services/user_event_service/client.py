@@ -121,22 +121,6 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
     )
 
     @classmethod
-    def from_service_account_info(cls, info: dict, *args, **kwargs):
-        """Creates an instance of this client using the provided credentials info.
-
-        Args:
-            info (dict): The service account private key info.
-            args: Additional arguments to pass to the constructor.
-            kwargs: Additional arguments to pass to the constructor.
-
-        Returns:
-            {@api.name}: The constructed client.
-        """
-        credentials = service_account.Credentials.from_service_account_info(info)
-        kwargs["credentials"] = credentials
-        return cls(*args, **kwargs)
-
-    @classmethod
     def from_service_account_file(cls, filename: str, *args, **kwargs):
         """Creates an instance of this client using the provided credentials
         file.
@@ -537,7 +521,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
                     service ResourceService {
                       rpc GetResource(GetResourceRequest) returns (google.api.HttpBody);
-                      rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty);
+                      rpc UpdateResource(google.api.HttpBody) returns
+                      (google.protobuf.Empty);
                     }
 
                 Example with streaming methods:

@@ -112,23 +112,81 @@ class CatalogServiceTransport(abc.ABC):
         # Precompute the wrapped methods.
         self._wrapped_methods = {
             self.create_catalog_item: gapic_v1.method.wrap_method(
-                self.create_catalog_item, default_timeout=None, client_info=client_info,
+                self.create_catalog_item,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.get_catalog_item: gapic_v1.method.wrap_method(
-                self.get_catalog_item, default_timeout=None, client_info=client_info,
+                self.get_catalog_item,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.list_catalog_items: gapic_v1.method.wrap_method(
-                self.list_catalog_items, default_timeout=None, client_info=client_info,
+                self.list_catalog_items,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.update_catalog_item: gapic_v1.method.wrap_method(
-                self.update_catalog_item, default_timeout=None, client_info=client_info,
+                self.update_catalog_item,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.delete_catalog_item: gapic_v1.method.wrap_method(
-                self.delete_catalog_item, default_timeout=None, client_info=client_info,
+                self.delete_catalog_item,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.import_catalog_items: gapic_v1.method.wrap_method(
                 self.import_catalog_items,
-                default_timeout=None,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
                 client_info=client_info,
             ),
         }

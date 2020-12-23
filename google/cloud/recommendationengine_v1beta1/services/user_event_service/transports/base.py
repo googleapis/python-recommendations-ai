@@ -112,19 +112,69 @@ class UserEventServiceTransport(abc.ABC):
         # Precompute the wrapped methods.
         self._wrapped_methods = {
             self.write_user_event: gapic_v1.method.wrap_method(
-                self.write_user_event, default_timeout=None, client_info=client_info,
+                self.write_user_event,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.collect_user_event: gapic_v1.method.wrap_method(
-                self.collect_user_event, default_timeout=None, client_info=client_info,
+                self.collect_user_event,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.list_user_events: gapic_v1.method.wrap_method(
-                self.list_user_events, default_timeout=None, client_info=client_info,
+                self.list_user_events,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.purge_user_events: gapic_v1.method.wrap_method(
-                self.purge_user_events, default_timeout=None, client_info=client_info,
+                self.purge_user_events,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
             self.import_user_events: gapic_v1.method.wrap_method(
-                self.import_user_events, default_timeout=None, client_info=client_info,
+                self.import_user_events,
+                default_retry=retries.Retry(
+                    initial=0.1,
+                    maximum=60.0,
+                    multiplier=1.3,
+                    predicate=retries.if_exception_type(
+                        exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                    ),
+                ),
+                default_timeout=600.0,
+                client_info=client_info,
             ),
         }
 

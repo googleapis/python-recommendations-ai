@@ -86,7 +86,6 @@ class UserEventServiceAsyncClient:
         UserEventServiceClient.parse_common_location_path
     )
 
-    from_service_account_info = UserEventServiceClient.from_service_account_info
     from_service_account_file = UserEventServiceClient.from_service_account_file
     from_service_account_json = from_service_account_file
 
@@ -217,7 +216,15 @@ class UserEventServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.write_user_event,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -325,7 +332,8 @@ class UserEventServiceAsyncClient:
 
                     service ResourceService {
                       rpc GetResource(GetResourceRequest) returns (google.api.HttpBody);
-                      rpc UpdateResource(google.api.HttpBody) returns (google.protobuf.Empty);
+                      rpc UpdateResource(google.api.HttpBody) returns
+                      (google.protobuf.Empty);
                     }
 
                 Example with streaming methods:
@@ -372,7 +380,15 @@ class UserEventServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.collect_user_event,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -491,7 +507,15 @@ class UserEventServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.list_user_events,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -618,7 +642,15 @@ class UserEventServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.purge_user_events,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -742,7 +774,15 @@ class UserEventServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.import_user_events,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 

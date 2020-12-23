@@ -42,15 +42,6 @@ from .import_ import (
     ImportUserEventsResponse,
     UserEventImportSummary,
 )
-from .user_event_service import (
-    PurgeUserEventsRequest,
-    PurgeUserEventsMetadata,
-    PurgeUserEventsResponse,
-    WriteUserEventRequest,
-    CollectUserEventRequest,
-    ListUserEventsRequest,
-    ListUserEventsResponse,
-)
 from .catalog_service import (
     CreateCatalogItemRequest,
     GetCatalogItemRequest,
@@ -69,6 +60,15 @@ from .prediction_apikey_registry_service import (
 from .prediction_service import (
     PredictRequest,
     PredictResponse,
+)
+from .user_event_service import (
+    PurgeUserEventsRequest,
+    PurgeUserEventsMetadata,
+    PurgeUserEventsResponse,
+    WriteUserEventRequest,
+    CollectUserEventRequest,
+    ListUserEventsRequest,
+    ListUserEventsResponse,
 )
 
 __all__ = (
@@ -93,13 +93,6 @@ __all__ = (
     "ImportCatalogItemsResponse",
     "ImportUserEventsResponse",
     "UserEventImportSummary",
-    "PurgeUserEventsRequest",
-    "PurgeUserEventsMetadata",
-    "PurgeUserEventsResponse",
-    "WriteUserEventRequest",
-    "CollectUserEventRequest",
-    "ListUserEventsRequest",
-    "ListUserEventsResponse",
     "CreateCatalogItemRequest",
     "GetCatalogItemRequest",
     "ListCatalogItemsRequest",
@@ -113,4 +106,11 @@ __all__ = (
     "DeletePredictionApiKeyRegistrationRequest",
     "PredictRequest",
     "PredictResponse",
+    "PurgeUserEventsRequest",
+    "PurgeUserEventsMetadata",
+    "PurgeUserEventsResponse",
+    "WriteUserEventRequest",
+    "CollectUserEventRequest",
+    "ListUserEventsRequest",
+    "ListUserEventsResponse",
 )

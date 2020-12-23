@@ -88,7 +88,6 @@ class CatalogServiceAsyncClient:
         CatalogServiceClient.parse_common_location_path
     )
 
-    from_service_account_info = CatalogServiceClient.from_service_account_info
     from_service_account_file = CatalogServiceClient.from_service_account_file
     from_service_account_json = from_service_account_file
 
@@ -217,7 +216,15 @@ class CatalogServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.create_catalog_item,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -289,7 +296,15 @@ class CatalogServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.get_catalog_item,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -373,7 +388,15 @@ class CatalogServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.list_catalog_items,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -471,7 +494,15 @@ class CatalogServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.update_catalog_item,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -537,7 +568,15 @@ class CatalogServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.delete_catalog_item,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
@@ -652,7 +691,15 @@ class CatalogServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.import_catalog_items,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 

@@ -77,7 +77,6 @@ class PredictionServiceAsyncClient:
         PredictionServiceClient.parse_common_location_path
     )
 
-    from_service_account_info = PredictionServiceClient.from_service_account_info
     from_service_account_file = PredictionServiceClient.from_service_account_file
     from_service_account_json = from_service_account_file
 
@@ -252,7 +251,15 @@ class PredictionServiceAsyncClient:
         # and friendly error handling.
         rpc = gapic_v1.method_async.wrap_method(
             self._client._transport.predict,
-            default_timeout=None,
+            default_retry=retries.Retry(
+                initial=0.1,
+                maximum=60.0,
+                multiplier=1.3,
+                predicate=retries.if_exception_type(
+                    exceptions.DeadlineExceeded, exceptions.ServiceUnavailable,
+                ),
+            ),
+            default_timeout=600.0,
             client_info=DEFAULT_CLIENT_INFO,
         )
 
