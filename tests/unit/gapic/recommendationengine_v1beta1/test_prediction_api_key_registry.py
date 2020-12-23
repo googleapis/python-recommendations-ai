@@ -646,6 +646,119 @@ async def test_create_prediction_api_key_registration_field_headers_async():
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
 
 
+def test_create_prediction_api_key_registration_flattened():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.create_prediction_api_key_registration), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = (
+            prediction_apikey_registry_service.PredictionApiKeyRegistration()
+        )
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.create_prediction_api_key_registration(
+            parent="parent_value",
+            prediction_api_key_registration=prediction_apikey_registry_service.PredictionApiKeyRegistration(
+                api_key="api_key_value"
+            ),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[
+            0
+        ].prediction_api_key_registration == prediction_apikey_registry_service.PredictionApiKeyRegistration(
+            api_key="api_key_value"
+        )
+
+
+def test_create_prediction_api_key_registration_flattened_error():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.create_prediction_api_key_registration(
+            prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(),
+            parent="parent_value",
+            prediction_api_key_registration=prediction_apikey_registry_service.PredictionApiKeyRegistration(
+                api_key="api_key_value"
+            ),
+        )
+
+
+@pytest.mark.asyncio
+async def test_create_prediction_api_key_registration_flattened_async():
+    client = PredictionApiKeyRegistryAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.create_prediction_api_key_registration), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = (
+            prediction_apikey_registry_service.PredictionApiKeyRegistration()
+        )
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            prediction_apikey_registry_service.PredictionApiKeyRegistration()
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.create_prediction_api_key_registration(
+            parent="parent_value",
+            prediction_api_key_registration=prediction_apikey_registry_service.PredictionApiKeyRegistration(
+                api_key="api_key_value"
+            ),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[
+            0
+        ].prediction_api_key_registration == prediction_apikey_registry_service.PredictionApiKeyRegistration(
+            api_key="api_key_value"
+        )
+
+
+@pytest.mark.asyncio
+async def test_create_prediction_api_key_registration_flattened_error_async():
+    client = PredictionApiKeyRegistryAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.create_prediction_api_key_registration(
+            prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(),
+            parent="parent_value",
+            prediction_api_key_registration=prediction_apikey_registry_service.PredictionApiKeyRegistration(
+                api_key="api_key_value"
+            ),
+        )
+
+
 def test_list_prediction_api_key_registrations(
     transport: str = "grpc",
     request_type=prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest,
@@ -798,6 +911,93 @@ async def test_list_prediction_api_key_registrations_field_headers_async():
     # Establish that the field header was sent.
     _, _, kw = call.mock_calls[0]
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
+
+
+def test_list_prediction_api_key_registrations_flattened():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.list_prediction_api_key_registrations), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = (
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsResponse()
+        )
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.list_prediction_api_key_registrations(parent="parent_value",)
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+
+def test_list_prediction_api_key_registrations_flattened_error():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.list_prediction_api_key_registrations(
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(),
+            parent="parent_value",
+        )
+
+
+@pytest.mark.asyncio
+async def test_list_prediction_api_key_registrations_flattened_async():
+    client = PredictionApiKeyRegistryAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.list_prediction_api_key_registrations), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = (
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsResponse()
+        )
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsResponse()
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.list_prediction_api_key_registrations(
+            parent="parent_value",
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+
+@pytest.mark.asyncio
+async def test_list_prediction_api_key_registrations_flattened_error_async():
+    client = PredictionApiKeyRegistryAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.list_prediction_api_key_registrations(
+            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(),
+            parent="parent_value",
+        )
 
 
 def test_list_prediction_api_key_registrations_pager():
@@ -1137,6 +1337,87 @@ async def test_delete_prediction_api_key_registration_field_headers_async():
     assert ("x-goog-request-params", "name=name/value",) in kw["metadata"]
 
 
+def test_delete_prediction_api_key_registration_flattened():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.delete_prediction_api_key_registration), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = None
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.delete_prediction_api_key_registration(name="name_value",)
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].name == "name_value"
+
+
+def test_delete_prediction_api_key_registration_flattened_error():
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.delete_prediction_api_key_registration(
+            prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(),
+            name="name_value",
+        )
+
+
+@pytest.mark.asyncio
+async def test_delete_prediction_api_key_registration_flattened_async():
+    client = PredictionApiKeyRegistryAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.delete_prediction_api_key_registration), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = None
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(None)
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.delete_prediction_api_key_registration(
+            name="name_value",
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].name == "name_value"
+
+
+@pytest.mark.asyncio
+async def test_delete_prediction_api_key_registration_flattened_error_async():
+    client = PredictionApiKeyRegistryAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.delete_prediction_api_key_registration(
+            prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(),
+            name="name_value",
+        )
+
+
 def test_credentials_transport_error():
     # It is an error to provide credentials and a transport instance.
     transport = transports.PredictionApiKeyRegistryGrpcTransport(
@@ -1442,8 +1723,76 @@ def test_prediction_api_key_registry_transport_channel_mtls_with_adc(transport_c
             assert transport.grpc_channel == mock_grpc_channel
 
 
+def test_event_store_path():
+    project = "squid"
+    location = "clam"
+    catalog = "whelk"
+    event_store = "octopus"
+
+    expected = "projects/{project}/locations/{location}/catalogs/{catalog}/eventStores/{event_store}".format(
+        project=project, location=location, catalog=catalog, event_store=event_store,
+    )
+    actual = PredictionApiKeyRegistryClient.event_store_path(
+        project, location, catalog, event_store
+    )
+    assert expected == actual
+
+
+def test_parse_event_store_path():
+    expected = {
+        "project": "oyster",
+        "location": "nudibranch",
+        "catalog": "cuttlefish",
+        "event_store": "mussel",
+    }
+    path = PredictionApiKeyRegistryClient.event_store_path(**expected)
+
+    # Check that the path construction is reversible.
+    actual = PredictionApiKeyRegistryClient.parse_event_store_path(path)
+    assert expected == actual
+
+
+def test_prediction_api_key_registration_path():
+    project = "winkle"
+    location = "nautilus"
+    catalog = "scallop"
+    event_store = "abalone"
+    prediction_api_key_registration = "squid"
+
+    expected = "projects/{project}/locations/{location}/catalogs/{catalog}/eventStores/{event_store}/predictionApiKeyRegistrations/{prediction_api_key_registration}".format(
+        project=project,
+        location=location,
+        catalog=catalog,
+        event_store=event_store,
+        prediction_api_key_registration=prediction_api_key_registration,
+    )
+    actual = PredictionApiKeyRegistryClient.prediction_api_key_registration_path(
+        project, location, catalog, event_store, prediction_api_key_registration
+    )
+    assert expected == actual
+
+
+def test_parse_prediction_api_key_registration_path():
+    expected = {
+        "project": "clam",
+        "location": "whelk",
+        "catalog": "octopus",
+        "event_store": "oyster",
+        "prediction_api_key_registration": "nudibranch",
+    }
+    path = PredictionApiKeyRegistryClient.prediction_api_key_registration_path(
+        **expected
+    )
+
+    # Check that the path construction is reversible.
+    actual = PredictionApiKeyRegistryClient.parse_prediction_api_key_registration_path(
+        path
+    )
+    assert expected == actual
+
+
 def test_common_billing_account_path():
-    billing_account = "squid"
+    billing_account = "cuttlefish"
 
     expected = "billingAccounts/{billing_account}".format(
         billing_account=billing_account,
@@ -1454,7 +1803,7 @@ def test_common_billing_account_path():
 
 def test_parse_common_billing_account_path():
     expected = {
-        "billing_account": "clam",
+        "billing_account": "mussel",
     }
     path = PredictionApiKeyRegistryClient.common_billing_account_path(**expected)
 
@@ -1464,7 +1813,7 @@ def test_parse_common_billing_account_path():
 
 
 def test_common_folder_path():
-    folder = "whelk"
+    folder = "winkle"
 
     expected = "folders/{folder}".format(folder=folder,)
     actual = PredictionApiKeyRegistryClient.common_folder_path(folder)
@@ -1473,7 +1822,7 @@ def test_common_folder_path():
 
 def test_parse_common_folder_path():
     expected = {
-        "folder": "octopus",
+        "folder": "nautilus",
     }
     path = PredictionApiKeyRegistryClient.common_folder_path(**expected)
 
@@ -1483,7 +1832,7 @@ def test_parse_common_folder_path():
 
 
 def test_common_organization_path():
-    organization = "oyster"
+    organization = "scallop"
 
     expected = "organizations/{organization}".format(organization=organization,)
     actual = PredictionApiKeyRegistryClient.common_organization_path(organization)
@@ -1492,7 +1841,7 @@ def test_common_organization_path():
 
 def test_parse_common_organization_path():
     expected = {
-        "organization": "nudibranch",
+        "organization": "abalone",
     }
     path = PredictionApiKeyRegistryClient.common_organization_path(**expected)
 
@@ -1502,7 +1851,7 @@ def test_parse_common_organization_path():
 
 
 def test_common_project_path():
-    project = "cuttlefish"
+    project = "squid"
 
     expected = "projects/{project}".format(project=project,)
     actual = PredictionApiKeyRegistryClient.common_project_path(project)
@@ -1511,7 +1860,7 @@ def test_common_project_path():
 
 def test_parse_common_project_path():
     expected = {
-        "project": "mussel",
+        "project": "clam",
     }
     path = PredictionApiKeyRegistryClient.common_project_path(**expected)
 
@@ -1521,8 +1870,8 @@ def test_parse_common_project_path():
 
 
 def test_common_location_path():
-    project = "winkle"
-    location = "nautilus"
+    project = "whelk"
+    location = "octopus"
 
     expected = "projects/{project}/locations/{location}".format(
         project=project, location=location,
@@ -1533,8 +1882,8 @@ def test_common_location_path():
 
 def test_parse_common_location_path():
     expected = {
-        "project": "scallop",
-        "location": "abalone",
+        "project": "oyster",
+        "location": "nudibranch",
     }
     path = PredictionApiKeyRegistryClient.common_location_path(**expected)
 

@@ -634,6 +634,87 @@ async def test_create_catalog_item_field_headers_async():
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
 
 
+def test_create_catalog_item_flattened():
+    client = CatalogServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.create_catalog_item), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = catalog.CatalogItem()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.create_catalog_item(
+            parent="parent_value", catalog_item=catalog.CatalogItem(id="id_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[0].catalog_item == catalog.CatalogItem(id="id_value")
+
+
+def test_create_catalog_item_flattened_error():
+    client = CatalogServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.create_catalog_item(
+            catalog_service.CreateCatalogItemRequest(),
+            parent="parent_value",
+            catalog_item=catalog.CatalogItem(id="id_value"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_create_catalog_item_flattened_async():
+    client = CatalogServiceAsyncClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.create_catalog_item), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = catalog.CatalogItem()
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(catalog.CatalogItem())
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.create_catalog_item(
+            parent="parent_value", catalog_item=catalog.CatalogItem(id="id_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[0].catalog_item == catalog.CatalogItem(id="id_value")
+
+
+@pytest.mark.asyncio
+async def test_create_catalog_item_flattened_error_async():
+    client = CatalogServiceAsyncClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.create_catalog_item(
+            catalog_service.CreateCatalogItemRequest(),
+            parent="parent_value",
+            catalog_item=catalog.CatalogItem(id="id_value"),
+        )
+
+
 def test_get_catalog_item(
     transport: str = "grpc", request_type=catalog_service.GetCatalogItemRequest
 ):
@@ -995,6 +1076,89 @@ async def test_list_catalog_items_field_headers_async():
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
 
 
+def test_list_catalog_items_flattened():
+    client = CatalogServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.list_catalog_items), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = catalog_service.ListCatalogItemsResponse()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.list_catalog_items(
+            parent="parent_value", filter="filter_value",
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[0].filter == "filter_value"
+
+
+def test_list_catalog_items_flattened_error():
+    client = CatalogServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.list_catalog_items(
+            catalog_service.ListCatalogItemsRequest(),
+            parent="parent_value",
+            filter="filter_value",
+        )
+
+
+@pytest.mark.asyncio
+async def test_list_catalog_items_flattened_async():
+    client = CatalogServiceAsyncClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.list_catalog_items), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = catalog_service.ListCatalogItemsResponse()
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            catalog_service.ListCatalogItemsResponse()
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.list_catalog_items(
+            parent="parent_value", filter="filter_value",
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[0].filter == "filter_value"
+
+
+@pytest.mark.asyncio
+async def test_list_catalog_items_flattened_error_async():
+    client = CatalogServiceAsyncClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.list_catalog_items(
+            catalog_service.ListCatalogItemsRequest(),
+            parent="parent_value",
+            filter="filter_value",
+        )
+
+
 def test_list_catalog_items_pager():
     client = CatalogServiceClient(credentials=credentials.AnonymousCredentials,)
 
@@ -1330,6 +1494,7 @@ def test_update_catalog_item_flattened():
         # Call the method with a truthy value for each flattened field,
         # using the keyword arguments to the method.
         client.update_catalog_item(
+            name="name_value",
             catalog_item=catalog.CatalogItem(id="id_value"),
             update_mask=field_mask.FieldMask(paths=["paths_value"]),
         )
@@ -1338,6 +1503,8 @@ def test_update_catalog_item_flattened():
         # request object values.
         assert len(call.mock_calls) == 1
         _, args, _ = call.mock_calls[0]
+
+        assert args[0].name == "name_value"
 
         assert args[0].catalog_item == catalog.CatalogItem(id="id_value")
 
@@ -1352,6 +1519,7 @@ def test_update_catalog_item_flattened_error():
     with pytest.raises(ValueError):
         client.update_catalog_item(
             catalog_service.UpdateCatalogItemRequest(),
+            name="name_value",
             catalog_item=catalog.CatalogItem(id="id_value"),
             update_mask=field_mask.FieldMask(paths=["paths_value"]),
         )
@@ -1372,6 +1540,7 @@ async def test_update_catalog_item_flattened_async():
         # Call the method with a truthy value for each flattened field,
         # using the keyword arguments to the method.
         response = await client.update_catalog_item(
+            name="name_value",
             catalog_item=catalog.CatalogItem(id="id_value"),
             update_mask=field_mask.FieldMask(paths=["paths_value"]),
         )
@@ -1380,6 +1549,8 @@ async def test_update_catalog_item_flattened_async():
         # request object values.
         assert len(call.mock_calls)
         _, args, _ = call.mock_calls[0]
+
+        assert args[0].name == "name_value"
 
         assert args[0].catalog_item == catalog.CatalogItem(id="id_value")
 
@@ -1395,6 +1566,7 @@ async def test_update_catalog_item_flattened_error_async():
     with pytest.raises(ValueError):
         await client.update_catalog_item(
             catalog_service.UpdateCatalogItemRequest(),
+            name="name_value",
             catalog_item=catalog.CatalogItem(id="id_value"),
             update_mask=field_mask.FieldMask(paths=["paths_value"]),
         )
@@ -1718,6 +1890,135 @@ async def test_import_catalog_items_field_headers_async():
     # Establish that the field header was sent.
     _, _, kw = call.mock_calls[0]
     assert ("x-goog-request-params", "parent=parent/value",) in kw["metadata"]
+
+
+def test_import_catalog_items_flattened():
+    client = CatalogServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.import_catalog_items), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = operations_pb2.Operation(name="operations/op")
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.import_catalog_items(
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[0].request_id == "request_id_value"
+
+        assert args[0].input_config == import_.InputConfig(
+            catalog_inline_source=import_.CatalogInlineSource(
+                catalog_items=[catalog.CatalogItem(id="id_value")]
+            )
+        )
+
+        assert args[0].errors_config == import_.ImportErrorsConfig(
+            gcs_prefix="gcs_prefix_value"
+        )
+
+
+def test_import_catalog_items_flattened_error():
+    client = CatalogServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.import_catalog_items(
+            import_.ImportCatalogItemsRequest(),
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_import_catalog_items_flattened_async():
+    client = CatalogServiceAsyncClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.import_catalog_items), "__call__"
+    ) as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = operations_pb2.Operation(name="operations/op")
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            operations_pb2.Operation(name="operations/spam")
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.import_catalog_items(
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].parent == "parent_value"
+
+        assert args[0].request_id == "request_id_value"
+
+        assert args[0].input_config == import_.InputConfig(
+            catalog_inline_source=import_.CatalogInlineSource(
+                catalog_items=[catalog.CatalogItem(id="id_value")]
+            )
+        )
+
+        assert args[0].errors_config == import_.ImportErrorsConfig(
+            gcs_prefix="gcs_prefix_value"
+        )
+
+
+@pytest.mark.asyncio
+async def test_import_catalog_items_flattened_error_async():
+    client = CatalogServiceAsyncClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.import_catalog_items(
+            import_.ImportCatalogItemsRequest(),
+            parent="parent_value",
+            request_id="request_id_value",
+            input_config=import_.InputConfig(
+                catalog_inline_source=import_.CatalogInlineSource(
+                    catalog_items=[catalog.CatalogItem(id="id_value")]
+                )
+            ),
+            errors_config=import_.ImportErrorsConfig(gcs_prefix="gcs_prefix_value"),
+        )
 
 
 def test_credentials_transport_error():
@@ -2053,6 +2354,56 @@ def test_catalog_service_grpc_lro_async_client():
 
     # Ensure that subsequent calls to the property send the exact same object.
     assert transport.operations_client is transport.operations_client
+
+
+def test_catalog_path():
+    project = "squid"
+    location = "clam"
+    catalog = "whelk"
+
+    expected = "projects/{project}/locations/{location}/catalogs/{catalog}".format(
+        project=project, location=location, catalog=catalog,
+    )
+    actual = CatalogServiceClient.catalog_path(project, location, catalog)
+    assert expected == actual
+
+
+def test_parse_catalog_path():
+    expected = {
+        "project": "octopus",
+        "location": "oyster",
+        "catalog": "nudibranch",
+    }
+    path = CatalogServiceClient.catalog_path(**expected)
+
+    # Check that the path construction is reversible.
+    actual = CatalogServiceClient.parse_catalog_path(path)
+    assert expected == actual
+
+
+def test_catalog_item_path_path():
+    project = "cuttlefish"
+    location = "mussel"
+    catalog = "winkle"
+
+    expected = "projects/{project}/locations/{location}/catalogs/{catalog}/catalogItems/{catalog_item_path=**}".format(
+        project=project, location=location, catalog=catalog,
+    )
+    actual = CatalogServiceClient.catalog_item_path_path(project, location, catalog)
+    assert expected == actual
+
+
+def test_parse_catalog_item_path_path():
+    expected = {
+        "project": "nautilus",
+        "location": "scallop",
+        "catalog": "abalone",
+    }
+    path = CatalogServiceClient.catalog_item_path_path(**expected)
+
+    # Check that the path construction is reversible.
+    actual = CatalogServiceClient.parse_catalog_item_path_path(path)
+    assert expected == actual
 
 
 def test_common_billing_account_path():
