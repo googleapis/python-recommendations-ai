@@ -38,6 +38,7 @@ from google.api_core import operation_async  # type: ignore
 from google.cloud.recommendationengine_v1beta1.services.user_event_service import pagers
 from google.cloud.recommendationengine_v1beta1.types import import_
 from google.cloud.recommendationengine_v1beta1.types import user_event
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event_service
 from google.protobuf import any_pb2 as gp_any  # type: ignore
 from google.protobuf import timestamp_pb2 as timestamp  # type: ignore
@@ -163,6 +164,27 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
             UserEventServiceTransport: The transport used by the client instance.
         """
         return self._transport
+
+    @staticmethod
+    def event_store_path(
+        project: str, location: str, catalog: str, event_store: str,
+    ) -> str:
+        """Return a fully-qualified event_store string."""
+        return "projects/{project}/locations/{location}/catalogs/{catalog}/eventStores/{event_store}".format(
+            project=project,
+            location=location,
+            catalog=catalog,
+            event_store=event_store,
+        )
+
+    @staticmethod
+    def parse_event_store_path(path: str) -> Dict[str, str]:
+        """Parse a event_store path into its component segments."""
+        m = re.match(
+            r"^projects/(?P<project>.+?)/locations/(?P<location>.+?)/catalogs/(?P<catalog>.+?)/eventStores/(?P<event_store>.+?)$",
+            path,
+        )
+        return m.groupdict() if m else {}
 
     @staticmethod
     def common_billing_account_path(billing_account: str,) -> str:
@@ -340,16 +362,30 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         self,
         request: user_event_service.WriteUserEventRequest = None,
         *,
+        parent: str = None,
+        user_event: gcr_user_event.UserEvent = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
-    ) -> user_event.UserEvent:
+    ) -> gcr_user_event.UserEvent:
         r"""Writes a single user event.
 
         Args:
             request (google.cloud.recommendationengine_v1beta1.types.WriteUserEventRequest):
                 The request object. Request message for WriteUserEvent
                 method.
+            parent (str):
+                Required. The parent eventStore resource name, such as
+                "projects/1234/locations/global/catalogs/default_catalog/eventStores/default_event_store".
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            user_event (google.cloud.recommendationengine_v1beta1.types.UserEvent):
+                Required. User event to write.
+                This corresponds to the ``user_event`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -366,6 +402,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, user_event])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a user_event_service.WriteUserEventRequest.
@@ -373,6 +417,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.WriteUserEventRequest):
             request = user_event_service.WriteUserEventRequest(request)
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
+            if user_event is not None:
+                request.user_event = user_event
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -394,6 +446,10 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         self,
         request: user_event_service.CollectUserEventRequest = None,
         *,
+        parent: str = None,
+        user_event: str = None,
+        uri: str = None,
+        ets: int = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -409,6 +465,43 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
             request (google.cloud.recommendationengine_v1beta1.types.CollectUserEventRequest):
                 The request object. Request message for CollectUserEvent
                 method.
+            parent (str):
+                Required. The parent eventStore name, such as
+                "projects/1234/locations/global/catalogs/default_catalog/eventStores/default_event_store".
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            user_event (str):
+                Required. URL encoded UserEvent
+                proto.
+
+                This corresponds to the ``user_event`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            uri (str):
+                Optional. The url including cgi-
+                arameters but excluding the hash
+                fragment. The URL must be truncated to
+                1.5K bytes to conservatively be under
+                the 2K bytes. This is often more useful
+                than the referer url, because many
+                browsers only send the domain for 3rd
+                party requests.
+
+                This corresponds to the ``uri`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            ets (int):
+                Optional. The event timestamp in
+                milliseconds. This prevents browser
+                caching of otherwise identical get
+                requests. The name is abbreviated to
+                reduce the payload bytes.
+
+                This corresponds to the ``ets`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -466,6 +559,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, user_event, uri, ets])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a user_event_service.CollectUserEventRequest.
@@ -473,6 +574,18 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.CollectUserEventRequest):
             request = user_event_service.CollectUserEventRequest(request)
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
+            if user_event is not None:
+                request.user_event = user_event
+            if uri is not None:
+                request.uri = uri
+            if ets is not None:
+                request.ets = ets
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -494,6 +607,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         self,
         request: user_event_service.ListUserEventsRequest = None,
         *,
+        parent: str = None,
+        filter: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -505,6 +620,54 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
             request (google.cloud.recommendationengine_v1beta1.types.ListUserEventsRequest):
                 The request object. Request message for ListUserEvents
                 method.
+            parent (str):
+                Required. The parent eventStore resource name, such as
+                ``projects/*/locations/*/catalogs/default_catalog/eventStores/default_event_store``
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            filter (str):
+                Optional. Filtering expression to specify restrictions
+                over returned events. This is a sequence of terms, where
+                each term applies some kind of a restriction to the
+                returned user events. Use this expression to restrict
+                results to a specific time range, or filter events by
+                eventType. eg: eventTime > "2012-04-23T18:25:43.511Z"
+                eventsMissingCatalogItems
+                eventTime<"2012-04-23T18:25:43.511Z" eventType=search
+
+                We expect only 3 types of fields:
+
+                ::
+
+                   * eventTime: this can be specified a maximum of 2 times, once with a
+                     less than operator and once with a greater than operator. The
+                     eventTime restrict should result in one contiguous valid eventTime
+                     range.
+
+                   * eventType: only 1 eventType restriction can be specified.
+
+                   * eventsMissingCatalogItems: specififying this will restrict results
+                     to events for which catalog items were not found in the catalog. The
+                     default behavior is to return only those events for which catalog
+                     items were found.
+
+                Some examples of valid filters expressions:
+
+                -  Example 1: eventTime > "2012-04-23T18:25:43.511Z"
+                   eventTime < "2012-04-23T18:30:43.511Z"
+                -  Example 2: eventTime > "2012-04-23T18:25:43.511Z"
+                   eventType = detail-page-view
+                -  Example 3: eventsMissingCatalogItems eventType =
+                   search eventTime < "2018-04-23T18:30:43.511Z"
+                -  Example 4: eventTime > "2012-04-23T18:25:43.511Z"
+                -  Example 5: eventType = search
+                -  Example 6: eventsMissingCatalogItems
+
+                This corresponds to the ``filter`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -522,6 +685,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, filter])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a user_event_service.ListUserEventsRequest.
@@ -529,6 +700,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.ListUserEventsRequest):
             request = user_event_service.ListUserEventsRequest(request)
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
+            if filter is not None:
+                request.filter = filter
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -556,6 +735,9 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         self,
         request: user_event_service.PurgeUserEventsRequest = None,
         *,
+        parent: str = None,
+        filter: str = None,
+        force: bool = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -570,6 +752,48 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
             request (google.cloud.recommendationengine_v1beta1.types.PurgeUserEventsRequest):
                 The request object. Request message for PurgeUserEvents
                 method.
+            parent (str):
+                Required. The resource name of the event_store under
+                which the events are created. The format is
+                "projects/${projectId}/locations/global/catalogs/${catalogId}/eventStores/${eventStoreId}"
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            filter (str):
+                Required. The filter string to specify the events to be
+                deleted. Empty string filter is not allowed. This filter
+                can also be used with ListUserEvents API to list events
+                that will be deleted. The eligible fields for filtering
+                are:
+
+                -  eventType - UserEvent.eventType field of type string.
+                -  eventTime - in ISO 8601 "zulu" format.
+                -  visitorId - field of type string. Specifying this
+                   will delete all events associated with a visitor.
+                -  userId - field of type string. Specifying this will
+                   delete all events associated with a user. Example 1:
+                   Deleting all events in a time range.
+                   ``eventTime > "2012-04-23T18:25:43.511Z" eventTime < "2012-04-23T18:30:43.511Z"``
+                   Example 2: Deleting specific eventType in time range.
+                   ``eventTime > "2012-04-23T18:25:43.511Z" eventType = "detail-page-view"``
+                   Example 3: Deleting all events for a specific visitor
+                   ``visitorId = visitor1024`` The filtering fields are
+                   assumed to have an implicit AND.
+
+                This corresponds to the ``filter`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            force (bool):
+                Optional. The default value is false.
+                Override this flag to true to actually
+                perform the purge. If the field is not
+                set to true, a sampling of events to be
+                deleted will be returned.
+
+                This corresponds to the ``force`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -587,6 +811,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, filter, force])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a user_event_service.PurgeUserEventsRequest.
@@ -594,6 +826,16 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.PurgeUserEventsRequest):
             request = user_event_service.PurgeUserEventsRequest(request)
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
+            if filter is not None:
+                request.filter = filter
+            if force is not None:
+                request.force = force
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -623,6 +865,10 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         self,
         request: import_.ImportUserEventsRequest = None,
         *,
+        parent: str = None,
+        request_id: str = None,
+        input_config: import_.InputConfig = None,
+        errors_config: import_.ImportErrorsConfig = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -639,6 +885,39 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
             request (google.cloud.recommendationengine_v1beta1.types.ImportUserEventsRequest):
                 The request object. Request message for the
                 ImportUserEvents request.
+            parent (str):
+                Required.
+                "projects/1234/locations/global/catalogs/default_catalog/eventStores/default_event_store"
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            request_id (str):
+                Optional. Unique identifier provided by client, within
+                the ancestor dataset scope. Ensures idempotency for
+                expensive long running operations. Server-generated if
+                unspecified. Up to 128 characters long. This is returned
+                as google.longrunning.Operation.name in the response.
+                Note that this field must not be set if the desired
+                input config is catalog_inline_source.
+
+                This corresponds to the ``request_id`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            input_config (google.cloud.recommendationengine_v1beta1.types.InputConfig):
+                Required. The desired input location
+                of the data.
+
+                This corresponds to the ``input_config`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            errors_config (google.cloud.recommendationengine_v1beta1.types.ImportErrorsConfig):
+                Optional. The desired location of
+                errors incurred during the Import.
+
+                This corresponds to the ``errors_config`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -658,6 +937,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, request_id, input_config, errors_config])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a import_.ImportUserEventsRequest.
@@ -665,6 +952,18 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, import_.ImportUserEventsRequest):
             request = import_.ImportUserEventsRequest(request)
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
+            if request_id is not None:
+                request.request_id = request_id
+            if input_config is not None:
+                request.input_config = input_config
+            if errors_config is not None:
+                request.errors_config = errors_config
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.

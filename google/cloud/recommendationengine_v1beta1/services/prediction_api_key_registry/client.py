@@ -168,6 +168,53 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         return self._transport
 
     @staticmethod
+    def event_store_path(
+        project: str, location: str, catalog: str, event_store: str,
+    ) -> str:
+        """Return a fully-qualified event_store string."""
+        return "projects/{project}/locations/{location}/catalogs/{catalog}/eventStores/{event_store}".format(
+            project=project,
+            location=location,
+            catalog=catalog,
+            event_store=event_store,
+        )
+
+    @staticmethod
+    def parse_event_store_path(path: str) -> Dict[str, str]:
+        """Parse a event_store path into its component segments."""
+        m = re.match(
+            r"^projects/(?P<project>.+?)/locations/(?P<location>.+?)/catalogs/(?P<catalog>.+?)/eventStores/(?P<event_store>.+?)$",
+            path,
+        )
+        return m.groupdict() if m else {}
+
+    @staticmethod
+    def prediction_api_key_registration_path(
+        project: str,
+        location: str,
+        catalog: str,
+        event_store: str,
+        prediction_api_key_registration: str,
+    ) -> str:
+        """Return a fully-qualified prediction_api_key_registration string."""
+        return "projects/{project}/locations/{location}/catalogs/{catalog}/eventStores/{event_store}/predictionApiKeyRegistrations/{prediction_api_key_registration}".format(
+            project=project,
+            location=location,
+            catalog=catalog,
+            event_store=event_store,
+            prediction_api_key_registration=prediction_api_key_registration,
+        )
+
+    @staticmethod
+    def parse_prediction_api_key_registration_path(path: str) -> Dict[str, str]:
+        """Parse a prediction_api_key_registration path into its component segments."""
+        m = re.match(
+            r"^projects/(?P<project>.+?)/locations/(?P<location>.+?)/catalogs/(?P<catalog>.+?)/eventStores/(?P<event_store>.+?)/predictionApiKeyRegistrations/(?P<prediction_api_key_registration>.+?)$",
+            path,
+        )
+        return m.groupdict() if m else {}
+
+    @staticmethod
     def common_billing_account_path(billing_account: str,) -> str:
         """Return a fully-qualified billing_account string."""
         return "billingAccounts/{billing_account}".format(
@@ -343,6 +390,8 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         self,
         request: prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest = None,
         *,
+        parent: str = None,
+        prediction_api_key_registration: prediction_apikey_registry_service.PredictionApiKeyRegistration = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -353,6 +402,20 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             request (google.cloud.recommendationengine_v1beta1.types.CreatePredictionApiKeyRegistrationRequest):
                 The request object. Request message for the
                 `CreatePredictionApiKeyRegistration` method.
+            parent (str):
+                Required. The parent resource path.
+                ``projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store``
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            prediction_api_key_registration (google.cloud.recommendationengine_v1beta1.types.PredictionApiKeyRegistration):
+                Required. The prediction API key
+                registration.
+
+                This corresponds to the ``prediction_api_key_registration`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -365,6 +428,14 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
                 Registered Api Key.
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, prediction_api_key_registration])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest.
@@ -377,6 +448,16 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             request = prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest(
                 request
             )
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
+            if prediction_api_key_registration is not None:
+                request.prediction_api_key_registration = (
+                    prediction_api_key_registration
+                )
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -400,6 +481,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         self,
         request: prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest = None,
         *,
+        parent: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -411,6 +493,13 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             request (google.cloud.recommendationengine_v1beta1.types.ListPredictionApiKeyRegistrationsRequest):
                 The request object. Request message for the
                 `ListPredictionApiKeyRegistrations`.
+            parent (str):
+                Required. The parent placement resource name such as
+                "projects/1234/locations/global/catalogs/default_catalog/eventStores/default_event_store"
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -428,6 +517,14 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest.
@@ -440,6 +537,12 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             request = prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest(
                 request
             )
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if parent is not None:
+                request.parent = parent
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -469,6 +572,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         self,
         request: prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest = None,
         *,
+        name: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -479,6 +583,14 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             request (google.cloud.recommendationengine_v1beta1.types.DeletePredictionApiKeyRegistrationRequest):
                 The request object. Request message for
                 `DeletePredictionApiKeyRegistration` method.
+            name (str):
+                Required. The API key to unregister including full
+                resource path.
+                "projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/predictionApiKeyRegistrations/<YOUR_API_KEY>"
+
+                This corresponds to the ``name`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -487,6 +599,14 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
                 sent along with the request as metadata.
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([name])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         # Minor optimization to avoid making a copy if the user passes
         # in a prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest.
@@ -499,6 +619,12 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             request = prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest(
                 request
             )
+
+            # If we have keyword arguments corresponding to fields on the
+            # request, apply these.
+
+            if name is not None:
+                request.name = name
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.

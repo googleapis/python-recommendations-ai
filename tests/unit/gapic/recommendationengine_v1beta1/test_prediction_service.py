@@ -45,7 +45,7 @@ from google.cloud.recommendationengine_v1beta1.services.prediction_service impor
 from google.cloud.recommendationengine_v1beta1.types import catalog
 from google.cloud.recommendationengine_v1beta1.types import common
 from google.cloud.recommendationengine_v1beta1.types import prediction_service
-from google.cloud.recommendationengine_v1beta1.types import user_event
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.oauth2 import service_account
 from google.protobuf import struct_pb2 as struct  # type: ignore
 from google.protobuf import timestamp_pb2 as timestamp  # type: ignore
@@ -606,6 +606,95 @@ async def test_predict_field_headers_async():
     assert ("x-goog-request-params", "name=name/value",) in kw["metadata"]
 
 
+def test_predict_flattened():
+    client = PredictionServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(type(client.transport.predict), "__call__") as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = prediction_service.PredictResponse()
+
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        client.predict(
+            name="name_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls) == 1
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].name == "name_value"
+
+        assert args[0].user_event == gcr_user_event.UserEvent(
+            event_type="event_type_value"
+        )
+
+
+def test_predict_flattened_error():
+    client = PredictionServiceClient(credentials=credentials.AnonymousCredentials(),)
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        client.predict(
+            prediction_service.PredictRequest(),
+            name="name_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+
+@pytest.mark.asyncio
+async def test_predict_flattened_async():
+    client = PredictionServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(type(client.transport.predict), "__call__") as call:
+        # Designate an appropriate return value for the call.
+        call.return_value = prediction_service.PredictResponse()
+
+        call.return_value = grpc_helpers_async.FakeUnaryUnaryCall(
+            prediction_service.PredictResponse()
+        )
+        # Call the method with a truthy value for each flattened field,
+        # using the keyword arguments to the method.
+        response = await client.predict(
+            name="name_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+        # Establish that the underlying call was made with the expected
+        # request object values.
+        assert len(call.mock_calls)
+        _, args, _ = call.mock_calls[0]
+
+        assert args[0].name == "name_value"
+
+        assert args[0].user_event == gcr_user_event.UserEvent(
+            event_type="event_type_value"
+        )
+
+
+@pytest.mark.asyncio
+async def test_predict_flattened_error_async():
+    client = PredictionServiceAsyncClient(
+        credentials=credentials.AnonymousCredentials(),
+    )
+
+    # Attempting to call a method with both a request object and flattened
+    # fields is an error.
+    with pytest.raises(ValueError):
+        await client.predict(
+            prediction_service.PredictRequest(),
+            name="name_value",
+            user_event=gcr_user_event.UserEvent(event_type="event_type_value"),
+        )
+
+
 def test_predict_pager():
     client = PredictionServiceClient(credentials=credentials.AnonymousCredentials,)
 
@@ -1112,8 +1201,43 @@ def test_prediction_service_transport_channel_mtls_with_adc(transport_class):
             assert transport.grpc_channel == mock_grpc_channel
 
 
+def test_placement_path():
+    project = "squid"
+    location = "clam"
+    catalog = "whelk"
+    event_store = "octopus"
+    placement = "oyster"
+
+    expected = "projects/{project}/locations/{location}/catalogs/{catalog}/eventStores/{event_store}/placements/{placement}".format(
+        project=project,
+        location=location,
+        catalog=catalog,
+        event_store=event_store,
+        placement=placement,
+    )
+    actual = PredictionServiceClient.placement_path(
+        project, location, catalog, event_store, placement
+    )
+    assert expected == actual
+
+
+def test_parse_placement_path():
+    expected = {
+        "project": "nudibranch",
+        "location": "cuttlefish",
+        "catalog": "mussel",
+        "event_store": "winkle",
+        "placement": "nautilus",
+    }
+    path = PredictionServiceClient.placement_path(**expected)
+
+    # Check that the path construction is reversible.
+    actual = PredictionServiceClient.parse_placement_path(path)
+    assert expected == actual
+
+
 def test_common_billing_account_path():
-    billing_account = "squid"
+    billing_account = "scallop"
 
     expected = "billingAccounts/{billing_account}".format(
         billing_account=billing_account,
@@ -1124,7 +1248,7 @@ def test_common_billing_account_path():
 
 def test_parse_common_billing_account_path():
     expected = {
-        "billing_account": "clam",
+        "billing_account": "abalone",
     }
     path = PredictionServiceClient.common_billing_account_path(**expected)
 
@@ -1134,7 +1258,7 @@ def test_parse_common_billing_account_path():
 
 
 def test_common_folder_path():
-    folder = "whelk"
+    folder = "squid"
 
     expected = "folders/{folder}".format(folder=folder,)
     actual = PredictionServiceClient.common_folder_path(folder)
@@ -1143,7 +1267,7 @@ def test_common_folder_path():
 
 def test_parse_common_folder_path():
     expected = {
-        "folder": "octopus",
+        "folder": "clam",
     }
     path = PredictionServiceClient.common_folder_path(**expected)
 
@@ -1153,7 +1277,7 @@ def test_parse_common_folder_path():
 
 
 def test_common_organization_path():
-    organization = "oyster"
+    organization = "whelk"
 
     expected = "organizations/{organization}".format(organization=organization,)
     actual = PredictionServiceClient.common_organization_path(organization)
@@ -1162,7 +1286,7 @@ def test_common_organization_path():
 
 def test_parse_common_organization_path():
     expected = {
-        "organization": "nudibranch",
+        "organization": "octopus",
     }
     path = PredictionServiceClient.common_organization_path(**expected)
 
@@ -1172,7 +1296,7 @@ def test_parse_common_organization_path():
 
 
 def test_common_project_path():
-    project = "cuttlefish"
+    project = "oyster"
 
     expected = "projects/{project}".format(project=project,)
     actual = PredictionServiceClient.common_project_path(project)
@@ -1181,7 +1305,7 @@ def test_common_project_path():
 
 def test_parse_common_project_path():
     expected = {
-        "project": "mussel",
+        "project": "nudibranch",
     }
     path = PredictionServiceClient.common_project_path(**expected)
 
@@ -1191,8 +1315,8 @@ def test_parse_common_project_path():
 
 
 def test_common_location_path():
-    project = "winkle"
-    location = "nautilus"
+    project = "cuttlefish"
+    location = "mussel"
 
     expected = "projects/{project}/locations/{location}".format(
         project=project, location=location,
@@ -1203,8 +1327,8 @@ def test_common_location_path():
 
 def test_parse_common_location_path():
     expected = {
-        "project": "scallop",
-        "location": "abalone",
+        "project": "winkle",
+        "location": "nautilus",
     }
     path = PredictionServiceClient.common_location_path(**expected)
 

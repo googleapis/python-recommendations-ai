@@ -30,6 +30,7 @@ from google.oauth2 import service_account  # type: ignore
 
 from google.cloud.recommendationengine_v1beta1.services.prediction_service import pagers
 from google.cloud.recommendationengine_v1beta1.types import prediction_service
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 
 from .transports.base import PredictionServiceTransport, DEFAULT_CLIENT_INFO
 from .transports.grpc_asyncio import PredictionServiceGrpcAsyncIOTransport
@@ -43,6 +44,9 @@ class PredictionServiceAsyncClient:
 
     DEFAULT_ENDPOINT = PredictionServiceClient.DEFAULT_ENDPOINT
     DEFAULT_MTLS_ENDPOINT = PredictionServiceClient.DEFAULT_MTLS_ENDPOINT
+
+    placement_path = staticmethod(PredictionServiceClient.placement_path)
+    parse_placement_path = staticmethod(PredictionServiceClient.parse_placement_path)
 
     common_billing_account_path = staticmethod(
         PredictionServiceClient.common_billing_account_path
@@ -142,6 +146,8 @@ class PredictionServiceAsyncClient:
         self,
         request: prediction_service.PredictRequest = None,
         *,
+        name: str = None,
+        user_event: gcr_user_event.UserEvent = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -155,6 +161,60 @@ class PredictionServiceAsyncClient:
         Args:
             request (:class:`google.cloud.recommendationengine_v1beta1.types.PredictRequest`):
                 The request object. Request message for Predict method.
+            name (:class:`str`):
+                Required. Full resource name of the format:
+                {name=projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/placements/*}
+                The id of the recommendation engine placement. This id
+                is used to identify the set of models that will be used
+                to make the prediction.
+
+                We currently support three placements with the following
+                IDs by default:
+
+                -  ``shopping_cart``: Predicts items frequently bought
+                   together with one or more catalog items in the same
+                   shopping session. Commonly displayed after
+                   ``add-to-cart`` events, on product detail pages, or
+                   on the shopping cart page.
+
+                -  ``home_page``: Predicts the next product that a user
+                   will most likely engage with or purchase based on the
+                   shopping or viewing history of the specified
+                   ``userId`` or ``visitorId``. For example -
+                   Recommendations for you.
+
+                -  ``product_detail``: Predicts the next product that a
+                   user will most likely engage with or purchase. The
+                   prediction is based on the shopping or viewing
+                   history of the specified ``userId`` or ``visitorId``
+                   and its relevance to a specified ``CatalogItem``.
+                   Typically used on product detail pages. For example -
+                   More items like this.
+
+                -  ``recently_viewed_default``: Returns up to 75 items
+                   recently viewed by the specified ``userId`` or
+                   ``visitorId``, most recent ones first. Returns
+                   nothing if neither of them has viewed any items yet.
+                   For example - Recently viewed.
+
+                The full list of available placements can be seen at
+                https://console.cloud.google.com/recommendation/datafeeds/default_catalog/dashboard
+
+                This corresponds to the ``name`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            user_event (:class:`google.cloud.recommendationengine_v1beta1.types.UserEvent`):
+                Required. Context about the user,
+                what they are looking at and what action
+                they took to trigger the predict
+                request. Note that this user event
+                detail won't be ingested to userEvent
+                logs. Thus, a separate userEvent write
+                request is required for event logging.
+
+                This corresponds to the ``user_event`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -171,8 +231,24 @@ class PredictionServiceAsyncClient:
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([name, user_event])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = prediction_service.PredictRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if name is not None:
+            request.name = name
+        if user_event is not None:
+            request.user_event = user_event
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.

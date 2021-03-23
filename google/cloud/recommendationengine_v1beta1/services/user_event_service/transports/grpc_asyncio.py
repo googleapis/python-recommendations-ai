@@ -30,7 +30,7 @@ from grpc.experimental import aio  # type: ignore
 
 from google.api import httpbody_pb2 as httpbody  # type: ignore
 from google.cloud.recommendationengine_v1beta1.types import import_
-from google.cloud.recommendationengine_v1beta1.types import user_event
+from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event_service
 from google.longrunning import operations_pb2 as operations  # type: ignore
 
@@ -279,7 +279,7 @@ class UserEventServiceGrpcAsyncIOTransport(UserEventServiceTransport):
     def write_user_event(
         self,
     ) -> Callable[
-        [user_event_service.WriteUserEventRequest], Awaitable[user_event.UserEvent]
+        [user_event_service.WriteUserEventRequest], Awaitable[gcr_user_event.UserEvent]
     ]:
         r"""Return a callable for the write user event method over gRPC.
 
@@ -299,7 +299,7 @@ class UserEventServiceGrpcAsyncIOTransport(UserEventServiceTransport):
             self._stubs["write_user_event"] = self.grpc_channel.unary_unary(
                 "/google.cloud.recommendationengine.v1beta1.UserEventService/WriteUserEvent",
                 request_serializer=user_event_service.WriteUserEventRequest.serialize,
-                response_deserializer=user_event.UserEvent.deserialize,
+                response_deserializer=gcr_user_event.UserEvent.deserialize,
             )
         return self._stubs["write_user_event"]
 

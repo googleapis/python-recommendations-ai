@@ -52,6 +52,13 @@ class CatalogServiceAsyncClient:
     DEFAULT_ENDPOINT = CatalogServiceClient.DEFAULT_ENDPOINT
     DEFAULT_MTLS_ENDPOINT = CatalogServiceClient.DEFAULT_MTLS_ENDPOINT
 
+    catalog_path = staticmethod(CatalogServiceClient.catalog_path)
+    parse_catalog_path = staticmethod(CatalogServiceClient.parse_catalog_path)
+    catalog_item_path_path = staticmethod(CatalogServiceClient.catalog_item_path_path)
+    parse_catalog_item_path_path = staticmethod(
+        CatalogServiceClient.parse_catalog_item_path_path
+    )
+
     common_billing_account_path = staticmethod(
         CatalogServiceClient.common_billing_account_path
     )
@@ -150,6 +157,8 @@ class CatalogServiceAsyncClient:
         self,
         request: catalog_service.CreateCatalogItemRequest = None,
         *,
+        parent: str = None,
+        catalog_item: catalog.CatalogItem = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -160,6 +169,18 @@ class CatalogServiceAsyncClient:
             request (:class:`google.cloud.recommendationengine_v1beta1.types.CreateCatalogItemRequest`):
                 The request object. Request message for
                 CreateCatalogItem method.
+            parent (:class:`str`):
+                Required. The parent catalog resource name, such as
+                ``projects/*/locations/global/catalogs/default_catalog``
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            catalog_item (:class:`google.cloud.recommendationengine_v1beta1.types.CatalogItem`):
+                Required. The catalog item to create.
+                This corresponds to the ``catalog_item`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -174,8 +195,24 @@ class CatalogServiceAsyncClient:
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, catalog_item])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = catalog_service.CreateCatalogItemRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if catalog_item is not None:
+            request.catalog_item = catalog_item
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -274,6 +311,8 @@ class CatalogServiceAsyncClient:
         self,
         request: catalog_service.ListCatalogItemsRequest = None,
         *,
+        parent: str = None,
+        filter: str = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -284,6 +323,20 @@ class CatalogServiceAsyncClient:
             request (:class:`google.cloud.recommendationengine_v1beta1.types.ListCatalogItemsRequest`):
                 The request object. Request message for ListCatalogItems
                 method.
+            parent (:class:`str`):
+                Required. The parent catalog resource name, such as
+                ``projects/*/locations/global/catalogs/default_catalog``
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            filter (:class:`str`):
+                Optional. A filter to apply on the
+                list results.
+
+                This corresponds to the ``filter`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -301,8 +354,24 @@ class CatalogServiceAsyncClient:
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, filter])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = catalog_service.ListCatalogItemsRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if filter is not None:
+            request.filter = filter
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
@@ -334,6 +403,7 @@ class CatalogServiceAsyncClient:
         self,
         request: catalog_service.UpdateCatalogItemRequest = None,
         *,
+        name: str = None,
         catalog_item: catalog.CatalogItem = None,
         update_mask: field_mask.FieldMask = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
@@ -347,6 +417,13 @@ class CatalogServiceAsyncClient:
             request (:class:`google.cloud.recommendationengine_v1beta1.types.UpdateCatalogItemRequest`):
                 The request object. Request message for
                 UpdateCatalogItem method.
+            name (:class:`str`):
+                Required. Full resource name of catalog item, such as
+                ``projects/*/locations/global/catalogs/default_catalog/catalogItems/some_catalog_item_id``
+
+                This corresponds to the ``name`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
             catalog_item (:class:`google.cloud.recommendationengine_v1beta1.types.CatalogItem`):
                 Required. The catalog item to update/create. The
                 'catalog_item_id' field has to match that in the 'name'.
@@ -378,7 +455,7 @@ class CatalogServiceAsyncClient:
         # Create or coerce a protobuf request object.
         # Sanity check: If we got a request object, we should *not* have
         # gotten any keyword arguments that map to the request.
-        has_flattened_params = any([catalog_item, update_mask])
+        has_flattened_params = any([name, catalog_item, update_mask])
         if request is not None and has_flattened_params:
             raise ValueError(
                 "If the `request` argument is set, then none of "
@@ -390,6 +467,8 @@ class CatalogServiceAsyncClient:
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
 
+        if name is not None:
+            request.name = name
         if catalog_item is not None:
             request.catalog_item = catalog_item
         if update_mask is not None:
@@ -485,6 +564,10 @@ class CatalogServiceAsyncClient:
         self,
         request: import_.ImportCatalogItemsRequest = None,
         *,
+        parent: str = None,
+        request_id: str = None,
+        input_config: import_.InputConfig = None,
+        errors_config: import_.ImportErrorsConfig = None,
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
@@ -500,6 +583,40 @@ class CatalogServiceAsyncClient:
         Args:
             request (:class:`google.cloud.recommendationengine_v1beta1.types.ImportCatalogItemsRequest`):
                 The request object. Request message for Import methods.
+            parent (:class:`str`):
+                Required.
+                "projects/1234/locations/global/catalogs/default_catalog"
+
+                This corresponds to the ``parent`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            request_id (:class:`str`):
+                Optional. Unique identifier provided
+                by client, within the ancestor dataset
+                scope. Ensures idempotency and used for
+                request deduplication. Server-generated
+                if unspecified. Up to 128 characters
+                long. This is returned as
+                google.longrunning.Operation.name in the
+                response.
+
+                This corresponds to the ``request_id`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            input_config (:class:`google.cloud.recommendationengine_v1beta1.types.InputConfig`):
+                Required. The desired input location
+                of the data.
+
+                This corresponds to the ``input_config`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
+            errors_config (:class:`google.cloud.recommendationengine_v1beta1.types.ImportErrorsConfig`):
+                Optional. The desired location of
+                errors incurred during the Import.
+
+                This corresponds to the ``errors_config`` field
+                on the ``request`` instance; if ``request`` is provided, this
+                should not be set.
 
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
@@ -518,8 +635,28 @@ class CatalogServiceAsyncClient:
 
         """
         # Create or coerce a protobuf request object.
+        # Sanity check: If we got a request object, we should *not* have
+        # gotten any keyword arguments that map to the request.
+        has_flattened_params = any([parent, request_id, input_config, errors_config])
+        if request is not None and has_flattened_params:
+            raise ValueError(
+                "If the `request` argument is set, then none of "
+                "the individual field arguments should be set."
+            )
 
         request = import_.ImportCatalogItemsRequest(request)
+
+        # If we have keyword arguments corresponding to fields on the
+        # request, apply these.
+
+        if parent is not None:
+            request.parent = parent
+        if request_id is not None:
+            request.request_id = request_id
+        if input_config is not None:
+            request.input_config = input_config
+        if errors_config is not None:
+            request.errors_config = errors_config
 
         # Wrap the RPC method; this adds retry and timeout information,
         # and friendly error handling.
