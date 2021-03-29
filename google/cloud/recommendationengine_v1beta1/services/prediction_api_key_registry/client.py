@@ -586,7 +586,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
             name (str):
                 Required. The API key to unregister including full
                 resource path.
-                "projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/predictionApiKeyRegistrations/<YOUR_API_KEY>"
+                ``projects/*/locations/global/catalogs/default_catalog/eventStores/default_event_store/predictionApiKeyRegistrations/<YOUR_API_KEY>``
 
                 This corresponds to the ``name`` field
                 on the ``request`` instance; if ``request`` is provided, this

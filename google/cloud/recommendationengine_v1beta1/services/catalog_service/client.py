@@ -180,22 +180,6 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         return m.groupdict() if m else {}
 
     @staticmethod
-    def catalog_item_path_path(project: str, location: str, catalog: str,) -> str:
-        """Return a fully-qualified catalog_item_path string."""
-        return "projects/{project}/locations/{location}/catalogs/{catalog}/catalogItems/{catalog_item_path=**}".format(
-            project=project, location=location, catalog=catalog,
-        )
-
-    @staticmethod
-    def parse_catalog_item_path_path(path: str) -> Dict[str, str]:
-        """Parse a catalog_item_path path into its component segments."""
-        m = re.match(
-            r"^projects/(?P<project>.+?)/locations/(?P<location>.+?)/catalogs/(?P<catalog>.+?)/catalogItems/{catalog_item_path=**}$",
-            path,
-        )
-        return m.groupdict() if m else {}
-
-    @staticmethod
     def common_billing_account_path(billing_account: str,) -> str:
         """Return a fully-qualified billing_account string."""
         return "billingAccounts/{billing_account}".format(

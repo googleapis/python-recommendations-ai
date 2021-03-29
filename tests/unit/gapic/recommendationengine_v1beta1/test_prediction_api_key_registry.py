@@ -95,15 +95,20 @@ def test__get_default_mtls_endpoint():
     )
 
 
-def test_prediction_api_key_registry_client_from_service_account_info():
+@pytest.mark.parametrize(
+    "client_class",
+    [PredictionApiKeyRegistryClient, PredictionApiKeyRegistryAsyncClient,],
+)
+def test_prediction_api_key_registry_client_from_service_account_info(client_class):
     creds = credentials.AnonymousCredentials()
     with mock.patch.object(
         service_account.Credentials, "from_service_account_info"
     ) as factory:
         factory.return_value = creds
         info = {"valid": True}
-        client = PredictionApiKeyRegistryClient.from_service_account_info(info)
+        client = client_class.from_service_account_info(info)
         assert client.transport._credentials == creds
+        assert isinstance(client, client_class)
 
         assert client.transport._host == "recommendationengine.googleapis.com:443"
 
@@ -120,9 +125,11 @@ def test_prediction_api_key_registry_client_from_service_account_file(client_cla
         factory.return_value = creds
         client = client_class.from_service_account_file("dummy/file/path.json")
         assert client.transport._credentials == creds
+        assert isinstance(client, client_class)
 
         client = client_class.from_service_account_json("dummy/file/path.json")
         assert client.transport._credentials == creds
+        assert isinstance(client, client_class)
 
         assert client.transport._host == "recommendationengine.googleapis.com:443"
 
@@ -519,6 +526,27 @@ def test_create_prediction_api_key_registration_from_dict():
     test_create_prediction_api_key_registration(request_type=dict)
 
 
+def test_create_prediction_api_key_registration_empty_call():
+    # This test is a coverage failsafe to make sure that totally empty calls,
+    # i.e. request == None and no flattened fields passed, work.
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(), transport="grpc",
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.create_prediction_api_key_registration), "__call__"
+    ) as call:
+        client.create_prediction_api_key_registration()
+        call.assert_called()
+        _, args, _ = call.mock_calls[0]
+
+        assert (
+            args[0]
+            == prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest()
+        )
+
+
 @pytest.mark.asyncio
 async def test_create_prediction_api_key_registration_async(
     transport: str = "grpc_asyncio",
@@ -786,6 +814,27 @@ def test_list_prediction_api_key_registrations(
 
 def test_list_prediction_api_key_registrations_from_dict():
     test_list_prediction_api_key_registrations(request_type=dict)
+
+
+def test_list_prediction_api_key_registrations_empty_call():
+    # This test is a coverage failsafe to make sure that totally empty calls,
+    # i.e. request == None and no flattened fields passed, work.
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(), transport="grpc",
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.list_prediction_api_key_registrations), "__call__"
+    ) as call:
+        client.list_prediction_api_key_registrations()
+        call.assert_called()
+        _, args, _ = call.mock_calls[0]
+
+        assert (
+            args[0]
+            == prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest()
+        )
 
 
 @pytest.mark.asyncio
@@ -1220,6 +1269,27 @@ def test_delete_prediction_api_key_registration(
 
 def test_delete_prediction_api_key_registration_from_dict():
     test_delete_prediction_api_key_registration(request_type=dict)
+
+
+def test_delete_prediction_api_key_registration_empty_call():
+    # This test is a coverage failsafe to make sure that totally empty calls,
+    # i.e. request == None and no flattened fields passed, work.
+    client = PredictionApiKeyRegistryClient(
+        credentials=credentials.AnonymousCredentials(), transport="grpc",
+    )
+
+    # Mock the actual call within the gRPC stub, and fake the request.
+    with mock.patch.object(
+        type(client.transport.delete_prediction_api_key_registration), "__call__"
+    ) as call:
+        client.delete_prediction_api_key_registration()
+        call.assert_called()
+        _, args, _ = call.mock_calls[0]
+
+        assert (
+            args[0]
+            == prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest()
+        )
 
 
 @pytest.mark.asyncio

@@ -175,6 +175,7 @@ class ProductCatalogItem(proto.Message):
         r"""Item stock state. If this field is unspecified, the item is
         assumed to be in stock.
         """
+        _pb_options = {"allow_alias": True}
         STOCK_STATE_UNSPECIFIED = 0
         IN_STOCK = 0
         OUT_OF_STOCK = 1
