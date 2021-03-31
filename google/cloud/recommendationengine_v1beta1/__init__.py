@@ -115,5 +115,4 @@ __all__ = (
     "UserEventServiceClient",
     "UserInfo",
     "WriteUserEventRequest",
-    "PredictionApiKeyRegistryClient",
 )
