@@ -4,29 +4,29 @@
       "git": {
         "name": ".",
         "remote": "git@github.com:googleapis/python-recommendations-ai",
-        "sha": "6c6581870702de9834b39ef63b66ee3b1acf13c7"
+        "sha": "09c1c70d1e20cb6c864a92f6dd98e1d7168ecf02"
       }
     },
     {
       "git": {
         "name": "googleapis",
         "remote": "https://github.com/googleapis/googleapis.git",
-        "sha": "c0507a2bf28ea9f9af82559f2c876d2af598d6d9",
-        "internalRef": "365593953"
+        "sha": "56fc6d43fed71188d7e18f3ca003544646c4ab35",
+        "internalRef": "366346972"
       }
     },
     {
       "git": {
         "name": "synthtool",
         "remote": "https://github.com/googleapis/synthtool.git",
-        "sha": "60fc32cc950c20cfdd774b846a4a7dc5d1e4d0ef"
+        "sha": "ff39353f34a36e7643b86e97724e4027ab466dc6"
       }
     },
     {
       "git": {
         "name": "synthtool",
         "remote": "https://github.com/googleapis/synthtool.git",
-        "sha": "60fc32cc950c20cfdd774b846a4a7dc5d1e4d0ef"
+        "sha": "ff39353f34a36e7643b86e97724e4027ab466dc6"
       }
     }
   ],
