@@ -54,6 +54,10 @@ class CatalogServiceAsyncClient:
 
     catalog_path = staticmethod(CatalogServiceClient.catalog_path)
     parse_catalog_path = staticmethod(CatalogServiceClient.parse_catalog_path)
+    catalog_item_path_path = staticmethod(CatalogServiceClient.catalog_item_path_path)
+    parse_catalog_item_path_path = staticmethod(
+        CatalogServiceClient.parse_catalog_item_path_path
+    )
 
     common_billing_account_path = staticmethod(
         CatalogServiceClient.common_billing_account_path
@@ -470,7 +474,7 @@ class CatalogServiceAsyncClient:
                 UpdateCatalogItem method.
             name (:class:`str`):
                 Required. Full resource name of catalog item, such as
-                ``projects/*/locations/global/catalogs/default_catalog/catalogItems/some_catalog_item_id``
+                "projects/*/locations/global/catalogs/default_catalog/catalogItems/some_catalog_item_id".
 
                 This corresponds to the ``name`` field
                 on the ``request`` instance; if ``request`` is provided, this
