@@ -2528,6 +2528,31 @@ def test_parse_catalog_path():
     assert expected == actual
 
 
+def test_catalog_item_path_path():
+    project = "cuttlefish"
+    location = "mussel"
+    catalog = "winkle"
+
+    expected = "projects/{project}/locations/{location}/catalogs/{catalog}/catalogItems/{catalog_item_path=**}".format(
+        project=project, location=location, catalog=catalog,
+    )
+    actual = CatalogServiceClient.catalog_item_path_path(project, location, catalog)
+    assert expected == actual
+
+
+def test_parse_catalog_item_path_path():
+    expected = {
+        "project": "nautilus",
+        "location": "scallop",
+        "catalog": "abalone",
+    }
+    path = CatalogServiceClient.catalog_item_path_path(**expected)
+
+    # Check that the path construction is reversible.
+    actual = CatalogServiceClient.parse_catalog_item_path_path(path)
+    assert expected == actual
+
+
 def test_common_billing_account_path():
     billing_account = "squid"
 
