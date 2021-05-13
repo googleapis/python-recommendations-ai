@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 from collections import OrderedDict
 import functools
 import re
@@ -22,13 +20,13 @@ from typing import Dict, Sequence, Tuple, Type, Union
 import pkg_resources
 
 import google.api_core.client_options as ClientOptions  # type: ignore
-from google.api_core import exceptions  # type: ignore
+from google.api_core import exceptions as core_exceptions  # type: ignore
 from google.api_core import gapic_v1  # type: ignore
 from google.api_core import retry as retries  # type: ignore
-from google.auth import credentials  # type: ignore
+from google.auth import credentials as ga_credentials  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
-from google.api import httpbody_pb2 as httpbody  # type: ignore
+from google.api import httpbody_pb2  # type: ignore
 from google.api_core import operation  # type: ignore
 from google.api_core import operation_async  # type: ignore
 from google.cloud.recommendationengine_v1beta1.services.user_event_service import pagers
@@ -36,9 +34,8 @@ from google.cloud.recommendationengine_v1beta1.types import import_
 from google.cloud.recommendationengine_v1beta1.types import user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event_service
-from google.protobuf import any_pb2 as gp_any  # type: ignore
-from google.protobuf import timestamp_pb2 as timestamp  # type: ignore
-
+from google.protobuf import any_pb2  # type: ignore
+from google.protobuf import timestamp_pb2  # type: ignore
 from .transports.base import UserEventServiceTransport, DEFAULT_CLIENT_INFO
 from .transports.grpc_asyncio import UserEventServiceGrpcAsyncIOTransport
 from .client import UserEventServiceClient
@@ -56,31 +53,26 @@ class UserEventServiceAsyncClient:
 
     event_store_path = staticmethod(UserEventServiceClient.event_store_path)
     parse_event_store_path = staticmethod(UserEventServiceClient.parse_event_store_path)
-
     common_billing_account_path = staticmethod(
         UserEventServiceClient.common_billing_account_path
     )
     parse_common_billing_account_path = staticmethod(
         UserEventServiceClient.parse_common_billing_account_path
     )
-
     common_folder_path = staticmethod(UserEventServiceClient.common_folder_path)
     parse_common_folder_path = staticmethod(
         UserEventServiceClient.parse_common_folder_path
     )
-
     common_organization_path = staticmethod(
         UserEventServiceClient.common_organization_path
     )
     parse_common_organization_path = staticmethod(
         UserEventServiceClient.parse_common_organization_path
     )
-
     common_project_path = staticmethod(UserEventServiceClient.common_project_path)
     parse_common_project_path = staticmethod(
         UserEventServiceClient.parse_common_project_path
     )
-
     common_location_path = staticmethod(UserEventServiceClient.common_location_path)
     parse_common_location_path = staticmethod(
         UserEventServiceClient.parse_common_location_path
@@ -134,7 +126,7 @@ class UserEventServiceAsyncClient:
     def __init__(
         self,
         *,
-        credentials: credentials.Credentials = None,
+        credentials: ga_credentials.Credentials = None,
         transport: Union[str, UserEventServiceTransport] = "grpc_asyncio",
         client_options: ClientOptions = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
@@ -171,7 +163,6 @@ class UserEventServiceAsyncClient:
             google.auth.exceptions.MutualTlsChannelError: If mutual TLS transport
                 creation failed for any reason.
         """
-
         self._client = UserEventServiceClient(
             credentials=credentials,
             transport=transport,
@@ -207,7 +198,6 @@ class UserEventServiceAsyncClient:
                 This corresponds to the ``user_event`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -236,7 +226,6 @@ class UserEventServiceAsyncClient:
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
-
         if parent is not None:
             request.parent = parent
         if user_event is not None:
@@ -282,7 +271,7 @@ class UserEventServiceAsyncClient:
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
-    ) -> httpbody.HttpBody:
+    ) -> httpbody_pb2.HttpBody:
         r"""Writes a single user event from the browser. This
         uses a GET request to due to browser restriction of
         POST-ing to a 3rd party domain.
@@ -331,7 +320,6 @@ class UserEventServiceAsyncClient:
                 This corresponds to the ``ets`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -401,7 +389,6 @@ class UserEventServiceAsyncClient:
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
-
         if parent is not None:
             request.parent = parent
         if user_event is not None:
@@ -505,7 +492,6 @@ class UserEventServiceAsyncClient:
                 This corresponds to the ``filter`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -535,7 +521,6 @@ class UserEventServiceAsyncClient:
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
-
         if parent is not None:
             request.parent = parent
         if filter is not None:
@@ -639,7 +624,6 @@ class UserEventServiceAsyncClient:
                 This corresponds to the ``force`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -669,7 +653,6 @@ class UserEventServiceAsyncClient:
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
-
         if parent is not None:
             request.parent = parent
         if filter is not None:
@@ -771,7 +754,6 @@ class UserEventServiceAsyncClient:
                 This corresponds to the ``errors_config`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -803,7 +785,6 @@ class UserEventServiceAsyncClient:
 
         # If we have keyword arguments corresponding to fields on the
         # request, apply these.
-
         if parent is not None:
             request.parent = parent
         if request_id is not None:

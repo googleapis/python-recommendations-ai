@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 from collections import OrderedDict
 from distutils import util
 import os
@@ -23,16 +21,16 @@ from typing import Callable, Dict, Optional, Sequence, Tuple, Type, Union
 import pkg_resources
 
 from google.api_core import client_options as client_options_lib  # type: ignore
-from google.api_core import exceptions  # type: ignore
+from google.api_core import exceptions as core_exceptions  # type: ignore
 from google.api_core import gapic_v1  # type: ignore
 from google.api_core import retry as retries  # type: ignore
-from google.auth import credentials  # type: ignore
+from google.auth import credentials as ga_credentials  # type: ignore
 from google.auth.transport import mtls  # type: ignore
 from google.auth.transport.grpc import SslCredentials  # type: ignore
 from google.auth.exceptions import MutualTLSChannelError  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
-from google.api import httpbody_pb2 as httpbody  # type: ignore
+from google.api import httpbody_pb2  # type: ignore
 from google.api_core import operation  # type: ignore
 from google.api_core import operation_async  # type: ignore
 from google.cloud.recommendationengine_v1beta1.services.user_event_service import pagers
@@ -40,9 +38,8 @@ from google.cloud.recommendationengine_v1beta1.types import import_
 from google.cloud.recommendationengine_v1beta1.types import user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event as gcr_user_event
 from google.cloud.recommendationengine_v1beta1.types import user_event_service
-from google.protobuf import any_pb2 as gp_any  # type: ignore
-from google.protobuf import timestamp_pb2 as timestamp  # type: ignore
-
+from google.protobuf import any_pb2  # type: ignore
+from google.protobuf import timestamp_pb2  # type: ignore
 from .transports.base import UserEventServiceTransport, DEFAULT_CLIENT_INFO
 from .transports.grpc import UserEventServiceGrpcTransport
 from .transports.grpc_asyncio import UserEventServiceGrpcAsyncIOTransport
@@ -248,7 +245,7 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
     def __init__(
         self,
         *,
-        credentials: Optional[credentials.Credentials] = None,
+        credentials: Optional[ga_credentials.Credentials] = None,
         transport: Union[str, UserEventServiceTransport, None] = None,
         client_options: Optional[client_options_lib.ClientOptions] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
@@ -386,7 +383,6 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
                 This corresponds to the ``user_event`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -417,10 +413,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.WriteUserEventRequest):
             request = user_event_service.WriteUserEventRequest(request)
-
             # If we have keyword arguments corresponding to fields on the
             # request, apply these.
-
             if parent is not None:
                 request.parent = parent
             if user_event is not None:
@@ -453,7 +447,7 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         retry: retries.Retry = gapic_v1.method.DEFAULT,
         timeout: float = None,
         metadata: Sequence[Tuple[str, str]] = (),
-    ) -> httpbody.HttpBody:
+    ) -> httpbody_pb2.HttpBody:
         r"""Writes a single user event from the browser. This
         uses a GET request to due to browser restriction of
         POST-ing to a 3rd party domain.
@@ -502,7 +496,6 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
                 This corresponds to the ``ets`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -574,10 +567,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.CollectUserEventRequest):
             request = user_event_service.CollectUserEventRequest(request)
-
             # If we have keyword arguments corresponding to fields on the
             # request, apply these.
-
             if parent is not None:
                 request.parent = parent
             if user_event is not None:
@@ -668,7 +659,6 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
                 This corresponds to the ``filter`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -700,10 +690,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.ListUserEventsRequest):
             request = user_event_service.ListUserEventsRequest(request)
-
             # If we have keyword arguments corresponding to fields on the
             # request, apply these.
-
             if parent is not None:
                 request.parent = parent
             if filter is not None:
@@ -794,7 +782,6 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
                 This corresponds to the ``force`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -826,10 +813,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, user_event_service.PurgeUserEventsRequest):
             request = user_event_service.PurgeUserEventsRequest(request)
-
             # If we have keyword arguments corresponding to fields on the
             # request, apply these.
-
             if parent is not None:
                 request.parent = parent
             if filter is not None:
@@ -918,7 +903,6 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
                 This corresponds to the ``errors_config`` field
                 on the ``request`` instance; if ``request`` is provided, this
                 should not be set.
-
             retry (google.api_core.retry.Retry): Designation of what errors, if any,
                 should be retried.
             timeout (float): The timeout for this request.
@@ -952,10 +936,8 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         # there are no flattened fields.
         if not isinstance(request, import_.ImportUserEventsRequest):
             request = import_.ImportUserEventsRequest(request)
-
             # If we have keyword arguments corresponding to fields on the
             # request, apply these.
-
             if parent is not None:
                 request.parent = parent
             if request_id is not None:
