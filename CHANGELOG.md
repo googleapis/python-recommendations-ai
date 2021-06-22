@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.2.3](https://www.github.com/googleapis/python-recommendations-ai/compare/v0.2.2...v0.2.3) (2021-06-22)
+
+
+### Documentation
+
+* omit mention of Python 2.7 in 'CONTRIBUTING.rst' ([#1127](https://www.github.com/googleapis/python-recommendations-ai/issues/1127)) ([#55](https://www.github.com/googleapis/python-recommendations-ai/issues/55)) ([47faef8](https://www.github.com/googleapis/python-recommendations-ai/commit/47faef890d8356ce60da06925b92a50f23a34e20)), closes [#1126](https://www.github.com/googleapis/python-recommendations-ai/issues/1126)
+
 ### [0.2.2](https://www.github.com/googleapis/python-recommendations-ai/compare/v0.2.1...v0.2.2) (2021-06-16)
 
 
