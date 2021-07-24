@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://www.github.com/googleapis/python-recommendations-ai/compare/v0.3.1...v0.4.0) (2021-07-24)
+
+
+### Features
+
+* add Samples section to CONTRIBUTING.rst ([#68](https://www.github.com/googleapis/python-recommendations-ai/issues/68)) ([190c5b0](https://www.github.com/googleapis/python-recommendations-ai/commit/190c5b04a6d01b006ebb81fe95142a760087c574))
+
+
+### Bug Fixes
+
+* enable self signed jwt for grpc ([#72](https://www.github.com/googleapis/python-recommendations-ai/issues/72)) ([2244581](https://www.github.com/googleapis/python-recommendations-ai/commit/22445819af2b11d8cc1d62d7e7b5265ffd950cdd))
+
 ### [0.3.1](https://www.github.com/googleapis/python-recommendations-ai/compare/v0.3.0...v0.3.1) (2021-07-20)
 
 
