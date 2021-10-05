@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.4](https://www.github.com/googleapis/python-recommendations-ai/compare/v0.3.3...v0.3.4) (2021-10-05)
+
+
+### Bug Fixes
+
+* improper types in pagers generation ([2d73287](https://www.github.com/googleapis/python-recommendations-ai/commit/2d732875566d49e9eed8702a40120c427222d529))
+
 ### [0.3.3](https://www.github.com/googleapis/python-recommendations-ai/compare/v0.3.2...v0.3.3) (2021-09-24)
 
 
