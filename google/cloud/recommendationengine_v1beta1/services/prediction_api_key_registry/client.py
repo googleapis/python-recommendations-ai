@@ -16,7 +16,7 @@
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, Optional, Sequence, Tuple, Type, Union
+from typing import Dict, Mapping, Optional, Sequence, Tuple, Type, Union
 import pkg_resources
 
 from google.api_core import client_options as client_options_lib
@@ -481,7 +481,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
         .. code-block:: python
 
-            from google.cloud import recommendationengine_v1beta1
+                    from google.cloud import recommendationengine_v1beta1
 
             def sample_create_prediction_api_key_registration():
                 # Create a client
@@ -597,7 +597,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
         .. code-block:: python
 
-            from google.cloud import recommendationengine_v1beta1
+                    from google.cloud import recommendationengine_v1beta1
 
             def sample_list_prediction_api_key_registrations():
                 # Create a client
@@ -715,7 +715,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
         .. code-block:: python
 
-            from google.cloud import recommendationengine_v1beta1
+                    from google.cloud import recommendationengine_v1beta1
 
             def sample_delete_prediction_api_key_registration():
                 # Create a client
