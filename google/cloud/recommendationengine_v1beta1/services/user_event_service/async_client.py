@@ -16,7 +16,7 @@
 from collections import OrderedDict
 import functools
 import re
-from typing import Dict, Optional, Sequence, Tuple, Type, Union
+from typing import Dict, Mapping, Optional, Sequence, Tuple, Type, Union
 import pkg_resources
 
 from google.api_core.client_options import ClientOptions
@@ -306,8 +306,7 @@ class UserEventServiceAsyncClient:
                 maximum=60.0,
                 multiplier=1.3,
                 predicate=retries.if_exception_type(
-                    core_exceptions.DeadlineExceeded,
-                    core_exceptions.ServiceUnavailable,
+                    core_exceptions.GoogleAPICallError,
                 ),
                 deadline=600.0,
             ),
@@ -350,7 +349,6 @@ class UserEventServiceAsyncClient:
         This method is used only by the Recommendations AI
         JavaScript pixel. Users should not call this method
         directly.
-
 
         .. code-block:: python
 
@@ -501,8 +499,7 @@ class UserEventServiceAsyncClient:
                 maximum=60.0,
                 multiplier=1.3,
                 predicate=retries.if_exception_type(
-                    core_exceptions.DeadlineExceeded,
-                    core_exceptions.ServiceUnavailable,
+                    core_exceptions.GoogleAPICallError,
                 ),
                 deadline=600.0,
             ),
@@ -539,7 +536,6 @@ class UserEventServiceAsyncClient:
     ) -> pagers.ListUserEventsAsyncPager:
         r"""Gets a list of user events within a time range, with
         potential filtering.
-
 
         .. code-block:: python
 
@@ -656,8 +652,7 @@ class UserEventServiceAsyncClient:
                 maximum=60.0,
                 multiplier=1.3,
                 predicate=retries.if_exception_type(
-                    core_exceptions.DeadlineExceeded,
-                    core_exceptions.ServiceUnavailable,
+                    core_exceptions.GoogleAPICallError,
                 ),
                 deadline=600.0,
             ),
@@ -707,7 +702,6 @@ class UserEventServiceAsyncClient:
         specified by the filter, this operation could take hours
         or days to complete. To test a filter, use the list
         command first.
-
 
         .. code-block:: python
 
@@ -824,8 +818,7 @@ class UserEventServiceAsyncClient:
                 maximum=60.0,
                 multiplier=1.3,
                 predicate=retries.if_exception_type(
-                    core_exceptions.DeadlineExceeded,
-                    core_exceptions.ServiceUnavailable,
+                    core_exceptions.GoogleAPICallError,
                 ),
                 deadline=600.0,
             ),
@@ -877,7 +870,6 @@ class UserEventServiceAsyncClient:
         it is possible for a subset of the items to be
         successfully inserted. Operation.metadata is of type
         ImportMetadata.
-
 
         .. code-block:: python
 
@@ -988,8 +980,7 @@ class UserEventServiceAsyncClient:
                 maximum=60.0,
                 multiplier=1.3,
                 predicate=retries.if_exception_type(
-                    core_exceptions.DeadlineExceeded,
-                    core_exceptions.ServiceUnavailable,
+                    core_exceptions.GoogleAPICallError,
                 ),
                 deadline=600.0,
             ),
