@@ -1960,7 +1960,6 @@ def test_prediction_api_key_registry_transport_auth_adc(transport_class):
     [
         transports.PredictionApiKeyRegistryGrpcTransport,
         transports.PredictionApiKeyRegistryGrpcAsyncIOTransport,
-        transports.PredictionApiKeyRegistryRestTransport,
     ],
 )
 def test_prediction_api_key_registry_transport_auth_gdch_credentials(transport_class):
