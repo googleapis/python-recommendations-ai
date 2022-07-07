@@ -3,7 +3,7 @@ Python Client for Recommendations AI API
 
 |preview| |pypi| |versions|
 
-`Recommendations AI API`_: 
+`Recommendations AI API`_: delivers highly personalized product recommendations at scale.
 
 - `Client Library Documentation`_
 - `Product Documentation`_
