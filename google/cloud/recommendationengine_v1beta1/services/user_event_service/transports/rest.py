@@ -259,10 +259,10 @@ class UserEventServiceRestTransport(UserEventServiceTransport):
         self,
         *,
         host: str = "recommendationengine.googleapis.com",
-        credentials: ga_credentials.Credentials = None,
-        credentials_file: str = None,
-        scopes: Sequence[str] = None,
-        client_cert_source_for_mtls: Callable[[], Tuple[bytes, bytes]] = None,
+        credentials: Optional[ga_credentials.Credentials] = None,
+        credentials_file: Optional[str] = None,
+        scopes: Optional[Sequence[str]] = None,
+        client_cert_source_for_mtls: Optional[Callable[[], Tuple[bytes, bytes]]] = None,
         quota_project_id: Optional[str] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
         always_use_jwt_access: Optional[bool] = False,
@@ -383,7 +383,7 @@ class UserEventServiceRestTransport(UserEventServiceTransport):
             request: user_event_service.CollectUserEventRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> httpbody_pb2.HttpBody:
             r"""Call the collect user event method over HTTP.
@@ -520,7 +520,7 @@ class UserEventServiceRestTransport(UserEventServiceTransport):
             request: import_.ImportUserEventsRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> operations_pb2.Operation:
             r"""Call the import user events method over HTTP.
@@ -618,7 +618,7 @@ class UserEventServiceRestTransport(UserEventServiceTransport):
             request: user_event_service.ListUserEventsRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> user_event_service.ListUserEventsResponse:
             r"""Call the list user events method over HTTP.
@@ -708,7 +708,7 @@ class UserEventServiceRestTransport(UserEventServiceTransport):
             request: user_event_service.PurgeUserEventsRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> operations_pb2.Operation:
             r"""Call the purge user events method over HTTP.
@@ -806,7 +806,7 @@ class UserEventServiceRestTransport(UserEventServiceTransport):
             request: user_event_service.WriteUserEventRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> gcr_user_event.UserEvent:
             r"""Call the write user event method over HTTP.

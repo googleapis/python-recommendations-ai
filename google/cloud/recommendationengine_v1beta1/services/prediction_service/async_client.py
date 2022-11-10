@@ -16,7 +16,17 @@
 from collections import OrderedDict
 import functools
 import re
-from typing import Dict, Mapping, Optional, Sequence, Tuple, Type, Union
+from typing import (
+    Dict,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
 import pkg_resources
 
 from google.api_core.client_options import ClientOptions
@@ -159,9 +169,9 @@ class PredictionServiceAsyncClient:
     def __init__(
         self,
         *,
-        credentials: ga_credentials.Credentials = None,
+        credentials: Optional[ga_credentials.Credentials] = None,
         transport: Union[str, PredictionServiceTransport] = "grpc_asyncio",
-        client_options: ClientOptions = None,
+        client_options: Optional[ClientOptions] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
     ) -> None:
         """Instantiates the prediction service client.
@@ -205,12 +215,12 @@ class PredictionServiceAsyncClient:
 
     async def predict(
         self,
-        request: Union[prediction_service.PredictRequest, dict] = None,
+        request: Optional[Union[prediction_service.PredictRequest, dict]] = None,
         *,
-        name: str = None,
-        user_event: gcr_user_event.UserEvent = None,
+        name: Optional[str] = None,
+        user_event: Optional[gcr_user_event.UserEvent] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> pagers.PredictAsyncPager:
         r"""Makes a recommendation prediction. If using API Key based
@@ -252,7 +262,7 @@ class PredictionServiceAsyncClient:
                     print(response)
 
         Args:
-            request (Union[google.cloud.recommendationengine_v1beta1.types.PredictRequest, dict]):
+            request (Optional[Union[google.cloud.recommendationengine_v1beta1.types.PredictRequest, dict]]):
                 The request object. Request message for Predict method.
             name (:class:`str`):
                 Required. Full resource name of the format:

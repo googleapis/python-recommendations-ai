@@ -16,7 +16,18 @@
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, Mapping, Optional, Sequence, Tuple, Type, Union, cast
+from typing import (
+    Dict,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 import pkg_resources
 
 from google.api_core import client_options as client_options_lib
@@ -67,7 +78,7 @@ class UserEventServiceClientMeta(type):
 
     def get_transport_class(
         cls,
-        label: str = None,
+        label: Optional[str] = None,
     ) -> Type[UserEventServiceTransport]:
         """Returns an appropriate transport class.
 
@@ -346,7 +357,7 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
         self,
         *,
         credentials: Optional[ga_credentials.Credentials] = None,
-        transport: Union[str, UserEventServiceTransport, None] = None,
+        transport: Optional[Union[str, UserEventServiceTransport]] = None,
         client_options: Optional[Union[client_options_lib.ClientOptions, dict]] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
     ) -> None:
@@ -447,12 +458,12 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
     def write_user_event(
         self,
-        request: Union[user_event_service.WriteUserEventRequest, dict] = None,
+        request: Optional[Union[user_event_service.WriteUserEventRequest, dict]] = None,
         *,
-        parent: str = None,
-        user_event: gcr_user_event.UserEvent = None,
+        parent: Optional[str] = None,
+        user_event: Optional[gcr_user_event.UserEvent] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> gcr_user_event.UserEvent:
         r"""Writes a single user event.
@@ -564,14 +575,16 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
     def collect_user_event(
         self,
-        request: Union[user_event_service.CollectUserEventRequest, dict] = None,
+        request: Optional[
+            Union[user_event_service.CollectUserEventRequest, dict]
+        ] = None,
         *,
-        parent: str = None,
-        user_event: str = None,
-        uri: str = None,
-        ets: int = None,
+        parent: Optional[str] = None,
+        user_event: Optional[str] = None,
+        uri: Optional[str] = None,
+        ets: Optional[int] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> httpbody_pb2.HttpBody:
         r"""Writes a single user event from the browser. This
@@ -755,12 +768,12 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
     def list_user_events(
         self,
-        request: Union[user_event_service.ListUserEventsRequest, dict] = None,
+        request: Optional[Union[user_event_service.ListUserEventsRequest, dict]] = None,
         *,
-        parent: str = None,
-        filter: str = None,
+        parent: Optional[str] = None,
+        filter: Optional[str] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> pagers.ListUserEventsPager:
         r"""Gets a list of user events within a time range, with
@@ -915,13 +928,15 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
     def purge_user_events(
         self,
-        request: Union[user_event_service.PurgeUserEventsRequest, dict] = None,
+        request: Optional[
+            Union[user_event_service.PurgeUserEventsRequest, dict]
+        ] = None,
         *,
-        parent: str = None,
-        filter: str = None,
-        force: bool = None,
+        parent: Optional[str] = None,
+        filter: Optional[str] = None,
+        force: Optional[bool] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> operation.Operation:
         r"""Deletes permanently all user events specified by the
@@ -1078,14 +1093,14 @@ class UserEventServiceClient(metaclass=UserEventServiceClientMeta):
 
     def import_user_events(
         self,
-        request: Union[import_.ImportUserEventsRequest, dict] = None,
+        request: Optional[Union[import_.ImportUserEventsRequest, dict]] = None,
         *,
-        parent: str = None,
-        request_id: str = None,
-        input_config: import_.InputConfig = None,
-        errors_config: import_.ImportErrorsConfig = None,
+        parent: Optional[str] = None,
+        request_id: Optional[str] = None,
+        input_config: Optional[import_.InputConfig] = None,
+        errors_config: Optional[import_.ImportErrorsConfig] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> operation.Operation:
         r"""Bulk import of User events. Request processing might

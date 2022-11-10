@@ -16,7 +16,18 @@
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, Mapping, Optional, Sequence, Tuple, Type, Union, cast
+from typing import (
+    Dict,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 import pkg_resources
 
 from google.api_core import client_options as client_options_lib
@@ -63,7 +74,7 @@ class PredictionApiKeyRegistryClientMeta(type):
 
     def get_transport_class(
         cls,
-        label: str = None,
+        label: Optional[str] = None,
     ) -> Type[PredictionApiKeyRegistryTransport]:
         """Returns an appropriate transport class.
 
@@ -372,7 +383,7 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
         self,
         *,
         credentials: Optional[ga_credentials.Credentials] = None,
-        transport: Union[str, PredictionApiKeyRegistryTransport, None] = None,
+        transport: Optional[Union[str, PredictionApiKeyRegistryTransport]] = None,
         client_options: Optional[Union[client_options_lib.ClientOptions, dict]] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
     ) -> None:
@@ -473,15 +484,19 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
     def create_prediction_api_key_registration(
         self,
-        request: Union[
-            prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest,
-            dict,
+        request: Optional[
+            Union[
+                prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest,
+                dict,
+            ]
         ] = None,
         *,
-        parent: str = None,
-        prediction_api_key_registration: prediction_apikey_registry_service.PredictionApiKeyRegistration = None,
+        parent: Optional[str] = None,
+        prediction_api_key_registration: Optional[
+            prediction_apikey_registry_service.PredictionApiKeyRegistration
+        ] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> prediction_apikey_registry_service.PredictionApiKeyRegistration:
         r"""Register an API key for use with predict method.
@@ -595,14 +610,16 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
     def list_prediction_api_key_registrations(
         self,
-        request: Union[
-            prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest,
-            dict,
+        request: Optional[
+            Union[
+                prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest,
+                dict,
+            ]
         ] = None,
         *,
-        parent: str = None,
+        parent: Optional[str] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> pagers.ListPredictionApiKeyRegistrationsPager:
         r"""List the registered apiKeys for use with predict
@@ -721,14 +738,16 @@ class PredictionApiKeyRegistryClient(metaclass=PredictionApiKeyRegistryClientMet
 
     def delete_prediction_api_key_registration(
         self,
-        request: Union[
-            prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest,
-            dict,
+        request: Optional[
+            Union[
+                prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest,
+                dict,
+            ]
         ] = None,
         *,
-        name: str = None,
+        name: Optional[str] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> None:
         r"""Unregister an apiKey from using for predict method.

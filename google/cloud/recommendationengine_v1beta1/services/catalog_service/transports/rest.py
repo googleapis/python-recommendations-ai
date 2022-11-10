@@ -275,10 +275,10 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
         self,
         *,
         host: str = "recommendationengine.googleapis.com",
-        credentials: ga_credentials.Credentials = None,
-        credentials_file: str = None,
-        scopes: Sequence[str] = None,
-        client_cert_source_for_mtls: Callable[[], Tuple[bytes, bytes]] = None,
+        credentials: Optional[ga_credentials.Credentials] = None,
+        credentials_file: Optional[str] = None,
+        scopes: Optional[Sequence[str]] = None,
+        client_cert_source_for_mtls: Optional[Callable[[], Tuple[bytes, bytes]]] = None,
         quota_project_id: Optional[str] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
         always_use_jwt_access: Optional[bool] = False,
@@ -397,7 +397,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
             request: catalog_service.CreateCatalogItemRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> catalog.CatalogItem:
             r"""Call the create catalog item method over HTTP.
@@ -496,7 +496,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
             request: catalog_service.DeleteCatalogItemRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ):
             r"""Call the delete catalog item method over HTTP.
@@ -572,7 +572,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
             request: catalog_service.GetCatalogItemRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> catalog.CatalogItem:
             r"""Call the get catalog item method over HTTP.
@@ -662,7 +662,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
             request: import_.ImportCatalogItemsRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> operations_pb2.Operation:
             r"""Call the import catalog items method over HTTP.
@@ -758,7 +758,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
             request: catalog_service.ListCatalogItemsRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> catalog_service.ListCatalogItemsResponse:
             r"""Call the list catalog items method over HTTP.
@@ -848,7 +848,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
             request: catalog_service.UpdateCatalogItemRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> catalog.CatalogItem:
             r"""Call the update catalog item method over HTTP.

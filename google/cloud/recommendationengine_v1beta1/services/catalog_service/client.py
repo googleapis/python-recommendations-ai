@@ -16,7 +16,18 @@
 from collections import OrderedDict
 import os
 import re
-from typing import Dict, Mapping, Optional, Sequence, Tuple, Type, Union, cast
+from typing import (
+    Dict,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 import pkg_resources
 
 from google.api_core import client_options as client_options_lib
@@ -65,7 +76,7 @@ class CatalogServiceClientMeta(type):
 
     def get_transport_class(
         cls,
-        label: str = None,
+        label: Optional[str] = None,
     ) -> Type[CatalogServiceTransport]:
         """Returns an appropriate transport class.
 
@@ -342,7 +353,7 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
         self,
         *,
         credentials: Optional[ga_credentials.Credentials] = None,
-        transport: Union[str, CatalogServiceTransport, None] = None,
+        transport: Optional[Union[str, CatalogServiceTransport]] = None,
         client_options: Optional[Union[client_options_lib.ClientOptions, dict]] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
     ) -> None:
@@ -443,12 +454,12 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
     def create_catalog_item(
         self,
-        request: Union[catalog_service.CreateCatalogItemRequest, dict] = None,
+        request: Optional[Union[catalog_service.CreateCatalogItemRequest, dict]] = None,
         *,
-        parent: str = None,
-        catalog_item: catalog.CatalogItem = None,
+        parent: Optional[str] = None,
+        catalog_item: Optional[catalog.CatalogItem] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> catalog.CatalogItem:
         r"""Creates a catalog item.
@@ -559,11 +570,11 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
     def get_catalog_item(
         self,
-        request: Union[catalog_service.GetCatalogItemRequest, dict] = None,
+        request: Optional[Union[catalog_service.GetCatalogItemRequest, dict]] = None,
         *,
-        name: str = None,
+        name: Optional[str] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> catalog.CatalogItem:
         r"""Gets a specific catalog item.
@@ -661,12 +672,12 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
     def list_catalog_items(
         self,
-        request: Union[catalog_service.ListCatalogItemsRequest, dict] = None,
+        request: Optional[Union[catalog_service.ListCatalogItemsRequest, dict]] = None,
         *,
-        parent: str = None,
-        filter: str = None,
+        parent: Optional[str] = None,
+        filter: Optional[str] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> pagers.ListCatalogItemsPager:
         r"""Gets a list of catalog items.
@@ -786,13 +797,13 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
     def update_catalog_item(
         self,
-        request: Union[catalog_service.UpdateCatalogItemRequest, dict] = None,
+        request: Optional[Union[catalog_service.UpdateCatalogItemRequest, dict]] = None,
         *,
-        name: str = None,
-        catalog_item: catalog.CatalogItem = None,
-        update_mask: field_mask_pb2.FieldMask = None,
+        name: Optional[str] = None,
+        catalog_item: Optional[catalog.CatalogItem] = None,
+        update_mask: Optional[field_mask_pb2.FieldMask] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> catalog.CatalogItem:
         r"""Updates a catalog item. Partial updating is
@@ -916,11 +927,11 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
     def delete_catalog_item(
         self,
-        request: Union[catalog_service.DeleteCatalogItemRequest, dict] = None,
+        request: Optional[Union[catalog_service.DeleteCatalogItemRequest, dict]] = None,
         *,
-        name: str = None,
+        name: Optional[str] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> None:
         r"""Deletes a catalog item.
@@ -1006,14 +1017,14 @@ class CatalogServiceClient(metaclass=CatalogServiceClientMeta):
 
     def import_catalog_items(
         self,
-        request: Union[import_.ImportCatalogItemsRequest, dict] = None,
+        request: Optional[Union[import_.ImportCatalogItemsRequest, dict]] = None,
         *,
-        parent: str = None,
-        request_id: str = None,
-        input_config: import_.InputConfig = None,
-        errors_config: import_.ImportErrorsConfig = None,
+        parent: Optional[str] = None,
+        request_id: Optional[str] = None,
+        input_config: Optional[import_.InputConfig] = None,
+        errors_config: Optional[import_.ImportErrorsConfig] = None,
         retry: OptionalRetry = gapic_v1.method.DEFAULT,
-        timeout: float = None,
+        timeout: Optional[float] = None,
         metadata: Sequence[Tuple[str, str]] = (),
     ) -> operation.Operation:
         r"""Bulk import of multiple catalog items. Request

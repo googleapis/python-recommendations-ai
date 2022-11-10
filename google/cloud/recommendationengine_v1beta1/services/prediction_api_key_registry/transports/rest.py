@@ -197,10 +197,10 @@ class PredictionApiKeyRegistryRestTransport(PredictionApiKeyRegistryTransport):
         self,
         *,
         host: str = "recommendationengine.googleapis.com",
-        credentials: ga_credentials.Credentials = None,
-        credentials_file: str = None,
-        scopes: Sequence[str] = None,
-        client_cert_source_for_mtls: Callable[[], Tuple[bytes, bytes]] = None,
+        credentials: Optional[ga_credentials.Credentials] = None,
+        credentials_file: Optional[str] = None,
+        scopes: Optional[Sequence[str]] = None,
+        client_cert_source_for_mtls: Optional[Callable[[], Tuple[bytes, bytes]]] = None,
         quota_project_id: Optional[str] = None,
         client_info: gapic_v1.client_info.ClientInfo = DEFAULT_CLIENT_INFO,
         always_use_jwt_access: Optional[bool] = False,
@@ -292,7 +292,7 @@ class PredictionApiKeyRegistryRestTransport(PredictionApiKeyRegistryTransport):
             request: prediction_apikey_registry_service.CreatePredictionApiKeyRegistrationRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> prediction_apikey_registry_service.PredictionApiKeyRegistration:
             r"""Call the create prediction api key
@@ -397,7 +397,7 @@ class PredictionApiKeyRegistryRestTransport(PredictionApiKeyRegistryTransport):
             request: prediction_apikey_registry_service.DeletePredictionApiKeyRegistrationRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ):
             r"""Call the delete prediction api key
@@ -479,7 +479,7 @@ class PredictionApiKeyRegistryRestTransport(PredictionApiKeyRegistryTransport):
             request: prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsRequest,
             *,
             retry: OptionalRetry = gapic_v1.method.DEFAULT,
-            timeout: float = None,
+            timeout: Optional[float] = None,
             metadata: Sequence[Tuple[str, str]] = (),
         ) -> prediction_apikey_registry_service.ListPredictionApiKeyRegistrationsResponse:
             r"""Call the list prediction api key
