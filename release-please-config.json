@@ -9,6 +9,11 @@
           "type": "json",
           "path": "samples/generated_samples/snippet_metadata_recommendationengine_v1beta1.json",
           "jsonpath": "$.clientLibrary.version"
+        },
+        {
+          "type": "json",
+          "path": "samples/generated_samples/snippet_metadata_google.cloud.recommendationengine.v1beta1.json",
+          "jsonpath": "$.clientLibrary.version"
         }
       ]
     }
