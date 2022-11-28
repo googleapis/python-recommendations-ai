@@ -646,7 +646,7 @@ class CatalogServiceAsyncClient:
                 UpdateCatalogItem method.
             name (:class:`str`):
                 Required. Full resource name of catalog item, such as
-                ``projects/*/locations/global/catalogs/default_catalog/catalogItems/some_catalog_item_id``
+                ``projects/*/locations/global/catalogs/default_catalog/catalogItems/some_catalog_item_id``.
 
                 This corresponds to the ``name`` field
                 on the ``request`` instance; if ``request`` is provided, this
