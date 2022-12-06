@@ -366,6 +366,7 @@ class CatalogServiceRestTransport(CatalogServiceTransport):
                 credentials=self._credentials,
                 scopes=self._scopes,
                 http_options=http_options,
+                path_prefix="v1beta1",
             )
 
             self._operations_client = operations_v1.AbstractOperationsClient(
