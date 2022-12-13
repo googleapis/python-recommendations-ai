@@ -56,10 +56,6 @@ DEFAULT_CLIENT_INFO = gapic_v1.client_info.ClientInfo(
     rest_version=requests_version,
 )
 
-# TODO (numeric enums): This file was generated with the option to
-#   request that the server respond with enums JSON-encoded as
-#   numbers. The code below does not implement that functionality yet.
-
 
 class PredictionApiKeyRegistryRestInterceptor:
     """Interceptor for PredictionApiKeyRegistry.
@@ -76,23 +72,25 @@ class PredictionApiKeyRegistryRestInterceptor:
 
     .. code-block:: python
         class MyCustomPredictionApiKeyRegistryInterceptor(PredictionApiKeyRegistryRestInterceptor):
-            def pre_create_prediction_api_key_registration(request, metadata):
+            def pre_create_prediction_api_key_registration(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_create_prediction_api_key_registration(response):
+            def post_create_prediction_api_key_registration(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
-            def pre_delete_prediction_api_key_registration(request, metadata):
+            def pre_delete_prediction_api_key_registration(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def pre_list_prediction_api_key_registrations(request, metadata):
+            def pre_list_prediction_api_key_registrations(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_list_prediction_api_key_registrations(response):
+            def post_list_prediction_api_key_registrations(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
         transport = PredictionApiKeyRegistryRestTransport(interceptor=MyCustomPredictionApiKeyRegistryInterceptor())
         client = PredictionApiKeyRegistryClient(transport=transport)

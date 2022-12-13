@@ -58,10 +58,6 @@ DEFAULT_CLIENT_INFO = gapic_v1.client_info.ClientInfo(
     rest_version=requests_version,
 )
 
-# TODO (numeric enums): This file was generated with the option to
-#   request that the server respond with enums JSON-encoded as
-#   numbers. The code below does not implement that functionality yet.
-
 
 class CatalogServiceRestInterceptor:
     """Interceptor for CatalogService.
@@ -78,44 +74,49 @@ class CatalogServiceRestInterceptor:
 
     .. code-block:: python
         class MyCustomCatalogServiceInterceptor(CatalogServiceRestInterceptor):
-            def pre_create_catalog_item(request, metadata):
+            def pre_create_catalog_item(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_create_catalog_item(response):
+            def post_create_catalog_item(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
-            def pre_delete_catalog_item(request, metadata):
+            def pre_delete_catalog_item(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def pre_get_catalog_item(request, metadata):
+            def pre_get_catalog_item(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_get_catalog_item(response):
+            def post_get_catalog_item(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
-            def pre_import_catalog_items(request, metadata):
+            def pre_import_catalog_items(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_import_catalog_items(response):
+            def post_import_catalog_items(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
-            def pre_list_catalog_items(request, metadata):
+            def pre_list_catalog_items(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_list_catalog_items(response):
+            def post_list_catalog_items(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
-            def pre_update_catalog_item(request, metadata):
+            def pre_update_catalog_item(self, request, metadata):
                 logging.log(f"Received request: {request}")
                 return request, metadata
 
-            def post_update_catalog_item(response):
+            def post_update_catalog_item(self, response):
                 logging.log(f"Received response: {response}")
+                return response
 
         transport = CatalogServiceRestTransport(interceptor=MyCustomCatalogServiceInterceptor())
         client = CatalogServiceClient(transport=transport)
