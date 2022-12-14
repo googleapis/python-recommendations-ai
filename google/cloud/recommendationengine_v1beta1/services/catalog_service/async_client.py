@@ -67,7 +67,10 @@ class CatalogServiceAsyncClient:
 
     catalog_path = staticmethod(CatalogServiceClient.catalog_path)
     parse_catalog_path = staticmethod(CatalogServiceClient.parse_catalog_path)
-
+    catalog_item_path_path = staticmethod(CatalogServiceClient.catalog_item_path_path)
+    parse_catalog_item_path_path = staticmethod(
+        CatalogServiceClient.parse_catalog_item_path_path
+    )
     common_billing_account_path = staticmethod(
         CatalogServiceClient.common_billing_account_path
     )
